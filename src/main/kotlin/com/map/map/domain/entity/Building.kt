@@ -28,6 +28,9 @@ class Building {
     @Column(nullable = false)
     var longitude: Double? = null
 
-    @OneToMany
+    @OneToMany(mappedBy = "building")
     var visitor: MutableList<Visited> = mutableListOf()
+
+    @OneToMany(mappedBy = "building")
+    var albums: MutableList<Album> = mutableListOf()
 }
