@@ -2,9 +2,7 @@ package com.map.map.controller
 
 import com.map.map.domain.dto.auth.RegisterDto
 import com.map.map.domain.response.Response
-import com.map.map.lib.Crypto
-import com.map.map.service.AuthService
-import com.map.map.service.AuthServiceImpl
+import com.map.map.service.auth.AuthServiceImpl
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus

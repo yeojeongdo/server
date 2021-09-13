@@ -1,10 +1,9 @@
-package com.map.map.service
+package com.map.map.service.auth
 
 import com.map.map.domain.dto.auth.RegisterDto
 import com.map.map.domain.entity.User
 import com.map.map.domain.repository.UserRepo
 import com.map.map.lib.Crypto
-import com.sun.org.apache.xpath.internal.operations.Bool
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -15,7 +14,7 @@ import org.springframework.web.client.HttpClientErrorException
 class AuthServiceImpl @Autowired constructor(
     val crypto : Crypto,
     val userRepo: UserRepo
-): AuthService  {
+): AuthService {
 
     @Transactional
     override fun register(registerDto: RegisterDto){
