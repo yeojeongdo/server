@@ -28,4 +28,9 @@ class User {
     @OneToMany(mappedBy = "user")
     var visited: MutableList<Visited> = mutableListOf()
 
+    @OneToMany(mappedBy = "user")
+    var albums: MutableList<Album> = mutableListOf()
+
+    @OneToMany(mappedBy = "user")
+    var viewed: MutableList<Viewed> = mutableListOf()
 }

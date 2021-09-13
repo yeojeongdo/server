@@ -10,11 +10,11 @@ class Visited {
     var idx: Long? = null
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "user_idx", nullable = false)
     var user: User? = null
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "building_idx", nullable = false)
     var building: Building? = null
 
     @Column(nullable = false)
