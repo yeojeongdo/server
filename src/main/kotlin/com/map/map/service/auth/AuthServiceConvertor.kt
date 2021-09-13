@@ -1,4 +1,4 @@
-package com.map.map.service
+package com.map.map.service.auth
 
 import com.map.map.domain.dto.auth.RegisterDto
 import com.map.map.domain.entity.User
