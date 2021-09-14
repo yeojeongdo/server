@@ -1,6 +1,5 @@
 package com.map.map.service.auth
 
-import com.map.map.domain.dto.auth.CheckIdDto
 import com.map.map.domain.dto.auth.RegisterDto
 import com.map.map.domain.entity.User
 import com.map.map.domain.repository.UserRepo
@@ -35,8 +34,8 @@ class AuthServiceImpl @Autowired constructor(
         }
     }
 
-    override fun checkId(checkIdDto: CheckIdDto) {
-        if(checkExistId(checkIdDto.id!!)){
+    override fun checkId(id: String) {
+        if(checkExistId(id)){
             throw HttpClientErrorException(HttpStatus.FORBIDDEN, "이미 존재하는 유저")
         }
     }

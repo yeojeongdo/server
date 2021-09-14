@@ -1,6 +1,5 @@
 package com.map.map.serviceTest.auth
 
-import com.map.map.domain.dto.auth.CheckIdDto
 import com.map.map.domain.dto.auth.RegisterDto
 import com.map.map.enum.Gender
 import com.map.map.service.auth.AuthServiceImpl
@@ -48,9 +47,8 @@ class AuthExceptionTest {
 
             authServiceImpl.register(registerDto)
 
-            var checkIdDto : CheckIdDto = CheckIdDto()
-            checkIdDto.id = "aa"
-            authServiceImpl.checkId(checkIdDto)
+            var id = "aa"
+            authServiceImpl.checkId(id)
         }catch (e: Exception){
             e.printStackTrace()
         }
