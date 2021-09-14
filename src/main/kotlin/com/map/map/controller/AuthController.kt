@@ -19,7 +19,7 @@ class AuthController @Autowired constructor(
     @ApiOperation("회원가입")
     fun register(@RequestBody @Valid registerDto: RegisterDto): Response {
         authService.register(registerDto)
-        return Response(HttpStatus.OK, "성공")
+        return Response(HttpStatus.CREATED, "성공")
     }
 
     @GetMapping("/check-id")

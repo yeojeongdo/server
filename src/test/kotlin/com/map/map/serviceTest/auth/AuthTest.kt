@@ -1,5 +1,6 @@
-package com.map.map.serviceTest
+package com.map.map.serviceTest.auth
 
+import com.map.map.domain.dto.auth.CheckIdDto
 import com.map.map.domain.dto.auth.RegisterDto
 import com.map.map.enum.Gender
 import com.map.map.service.auth.AuthServiceImpl
@@ -33,13 +34,9 @@ class AuthTest {
         }
     }
 
-
-    /**
-     * exception 발생
-     */
     @Test
     @Transactional
-    fun registerExistTest(){
+    fun userExistTest(){
         try{
             var registerDto:RegisterDto = RegisterDto()
             registerDto.id= "qwe"
@@ -49,9 +46,18 @@ class AuthTest {
             registerDto.birthDate = Date()
 
             authServiceImpl.register(registerDto)
-            authServiceImpl.register(registerDto)
+
+            var checkIdDto : CheckIdDto = CheckIdDto()
+            checkIdDto.id = registerDto.id
+            authServiceImpl.checkId(checkIdDto)
+
         }catch (e: Exception){
             e.printStackTrace()
         }
     }
+
+
+
+
+
 }

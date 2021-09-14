@@ -13,8 +13,8 @@ import org.springframework.web.client.HttpClientErrorException
 
 @Service
 class AuthServiceImpl @Autowired constructor(
-    val crypto : Crypto,
-    val userRepo: UserRepo
+    private val crypto : Crypto,
+    private val userRepo: UserRepo
 ): AuthService {
 
     @Transactional
@@ -41,7 +41,7 @@ class AuthServiceImpl @Autowired constructor(
         }
     }
 
-    fun checkExistId (id: String): Boolean {
+    private fun checkExistId (id: String): Boolean {
         var existUser = userRepo.findById(id)
         return (existUser != null)
     }
