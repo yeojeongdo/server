@@ -1,4 +1,4 @@
-package com.map.map.serviceTest
+package com.map.map.serviceTest.auth
 
 import com.map.map.domain.dto.auth.RegisterDto
 import com.map.map.enum.Gender
@@ -6,9 +6,7 @@ import com.map.map.service.auth.AuthServiceImpl
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.annotation.Rollback
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.transaction.interceptor.TransactionAspectSupport
 import java.util.*
 
 @SpringBootTest(classes = arrayOf(AuthServiceImpl::class))
@@ -33,13 +31,9 @@ class AuthTest {
         }
     }
 
-
-    /**
-     * exception 발생
-     */
     @Test
     @Transactional
-    fun registerExistTest(){
+    fun userExistTest(){
         try{
             var registerDto:RegisterDto = RegisterDto()
             registerDto.id= "qwe"
@@ -49,9 +43,16 @@ class AuthTest {
             registerDto.birthDate = Date()
 
             authServiceImpl.register(registerDto)
-            authServiceImpl.register(registerDto)
+
+            authServiceImpl.checkId(registerDto.id!!)
+
         }catch (e: Exception){
             e.printStackTrace()
         }
     }
+
+
+
+
+
 }
