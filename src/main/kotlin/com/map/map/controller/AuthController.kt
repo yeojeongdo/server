@@ -2,10 +2,14 @@ package com.map.map.controller
 
 import com.map.map.annotation.AutoLogging
 import com.map.map.domain.dto.auth.LoginDto
+import com.map.map.domain.dto.auth.req.RefreshTokenDto
 import com.map.map.domain.dto.auth.RegisterDto
+import com.map.map.domain.dto.auth.res.UserTokenRes
 import com.map.map.domain.response.Response
 import com.map.map.domain.response.ResponseData
 import com.map.map.service.auth.AuthServiceImpl
+import com.map.map.service.jwt.JwtService
+import com.map.map.service.jwt.JwtServiceImpl
 import io.swagger.annotations.ApiOperation
 import org.hibernate.validator.constraints.Length
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,6 +22,7 @@ import javax.validation.constraints.NotNull
 @RequestMapping("auth")
 class AuthController @Autowired constructor(
     val authService: AuthServiceImpl,
+    val jwtService: JwtService
 ) {
     @AutoLogging
     @PostMapping("/register")
@@ -49,6 +54,15 @@ class AuthController @Autowired constructor(
     ): ResponseData<LoginDto>{
         val loginRo = authService.login(loginDto)
         return ResponseData<LoginDto>(HttpStatus.OK, "성공", loginDto)
+    }
+
+    @PostMapping("/tokenRenewal")
+    @ApiOperation("토큰 갱신")
+    fun tokenRenewal(@RequestBody @Valid refreshTokenDto: RefreshTokenDto): ResponseData<UserTokenRes> {
+        val accessToken: String? = jwtService.refreshToken(refreshTokenDto.token)
+        val data = UserTokenRes(accessToken!!)
+
+        return ResponseData(HttpStatus.OK, "토큰 갱신 성공", data)
     }
 
 }
