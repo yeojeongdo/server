@@ -36,6 +36,8 @@ dependencies {
     implementation("org.modelmapper:modelmapper:2.1.1")
     implementation ("org.projectlombok:lombok")
 
+    implementation("org.springframework.boot:spring-boot-starter-aop")
+
     runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
