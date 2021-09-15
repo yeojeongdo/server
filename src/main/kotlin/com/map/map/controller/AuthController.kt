@@ -1,5 +1,6 @@
 package com.map.map.controller
 
+import com.map.map.annotation.AutoLogging
 import com.map.map.domain.dto.auth.LoginDto
 import com.map.map.domain.dto.auth.RegisterDto
 import com.map.map.domain.response.Response
@@ -18,6 +19,7 @@ import javax.validation.constraints.NotNull
 class AuthController @Autowired constructor(
     val authService: AuthServiceImpl,
 ) {
+    @AutoLogging
     @PostMapping("/register")
     @ApiOperation("회원가입")
     fun register(@RequestBody @Valid
@@ -27,6 +29,7 @@ class AuthController @Autowired constructor(
         return Response(HttpStatus.CREATED, "성공")
     }
 
+    @AutoLogging
     @GetMapping("/check-id")
     @ApiOperation("아이디 존재 여부")
     fun checkId( @RequestParam @Valid
@@ -38,6 +41,7 @@ class AuthController @Autowired constructor(
         return Response(HttpStatus.OK, "성공")
     }
 
+    @AutoLogging
     @PostMapping("/login")
     @ApiOperation("로그인")
     fun login(@RequestBody @Valid
