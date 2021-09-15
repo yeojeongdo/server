@@ -31,9 +31,11 @@ class Album {
     @OneToMany(mappedBy = "album")
     var viewed: MutableList<Viewed> = mutableListOf()
 
-    @OneToMany
+    @OneToMany(cascade = arrayOf(CascadeType.ALL))
+    @JoinColumn(name = "album_idx")
     var comments: MutableList<Comment> = mutableListOf()
 
-    @OneToMany
+    @OneToMany(cascade = arrayOf(CascadeType.ALL))
+    @JoinColumn(name = "album_idx")
     var photo: MutableList<Photo> = mutableListOf()
 }

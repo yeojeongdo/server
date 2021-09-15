@@ -21,6 +21,9 @@ class FileServiceImpl : FileService{
 //        }
 //    }
 
+    /**
+     * 파일 저장
+     */
     override fun storeFile(file: MultipartFile): String {
         val fileName = StringUtils.cleanPath(UUID.randomUUID().toString()+"-"+Objects.nonNull(file.originalFilename)+"."+file.contentType)
         return try{

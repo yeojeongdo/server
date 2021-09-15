@@ -10,10 +10,6 @@ class AlbumLike {
 
     @ManyToOne
     @JoinColumn
-    var album: Album? = null
-
-    @ManyToOne
-    @JoinColumn
     var user: User? = null
 
     @Column(nullable = false)

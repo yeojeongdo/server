@@ -13,5 +13,4 @@ class Comment {
 
     @Column(nullable = false)
     var content: String? = null
-
 }
