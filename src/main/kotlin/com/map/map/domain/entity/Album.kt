@@ -25,7 +25,8 @@ class Album {
     @Column(nullable = false)
     var date: Date? = null
 
-    @OneToMany(mappedBy = "album")
+    @OneToMany(cascade = arrayOf(CascadeType.ALL))
+    @JoinColumn(name = "album_idx")
     var likes: MutableList<AlbumLike> = mutableListOf()
 
     @OneToMany(mappedBy = "album")
