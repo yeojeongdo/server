@@ -3,6 +3,8 @@ package com.map.map.service.auth
 import com.map.map.domain.dto.auth.LoginDto
 import com.map.map.domain.dto.auth.RegisterDto
 import com.map.map.domain.entity.User
+import com.map.map.domain.entity.backup.UserBackUp
+import com.map.map.domain.entity.backup.repo.UserBackUpRepo
 import com.map.map.domain.repository.UserRepo
 import com.map.map.domain.response.auth.LoginRo
 import com.map.map.enum.JwtType
@@ -20,9 +22,13 @@ import org.springframework.web.client.HttpClientErrorException
 class AuthServiceImpl @Autowired constructor(
     private val crypto: Crypto,
     private val userRepo: UserRepo,
-    private val jwtService: JwtServiceImpl
+    private val jwtService: JwtServiceImpl,
+    private val userBackUpRepo: UserBackUpRepo
 ) : AuthService {
 
+    /**
+     * 회원가입
+     */
     @Transactional
     override fun register(registerDto: RegisterDto) {
         try {
@@ -35,18 +41,26 @@ class AuthServiceImpl @Autowired constructor(
 
             user.password = crypto.sha256(user.password!!)
 
-            userRepo.save(user)
+            var savedUser = userRepo.save(user)
+
+            addUserBackupData(savedUser)
         } catch (e: Exception) {
             throw e;
         }
     }
 
+    /**
+     * 아이디 체크
+     */
     override fun checkId(id: String) {
         if (checkExistId(id)) {
             throw HttpClientErrorException(HttpStatus.FORBIDDEN, "이미 존재하는 유저입니다.")
         }
     }
 
+    /**
+     * 로그인
+     */
     override fun login(loginDto: LoginDto): LoginRo {
         try {
             checkExistIdAndPassword(loginDto.id!!, loginDto.password!!)
@@ -57,6 +71,18 @@ class AuthServiceImpl @Autowired constructor(
         }
     }
 
+    /**
+     * 유저 백업 데이터 생성
+     */
+    private fun addUserBackupData(user: User){
+        var userBackUp = UserBackUp()
+        userToUserBackUp(user, userBackUp)
+        userBackUpRepo.save(userBackUp)
+    }
+
+    /**
+     * 아이디 비번 체크
+     */
     private fun checkExistIdAndPassword(id: String, password: String){
         val findUser = userRepo.findById(id);
         if(findUser == null){
@@ -68,6 +94,9 @@ class AuthServiceImpl @Autowired constructor(
         }
     }
 
+    /**
+     * jwt 생성
+     */
     private fun makeJwt(id: String): LoginRo{
         val loginRo = LoginRo()
         loginRo.accessToken = jwtService.createToken(id, JwtType.ACCESS)
@@ -75,6 +104,9 @@ class AuthServiceImpl @Autowired constructor(
         return loginRo
     }
 
+    /**
+     * 아이디 존재여부 확인
+     */
     private fun checkExistId(id: String): Boolean {
         var existUser = userRepo.findById(id)
         return (existUser != null)
