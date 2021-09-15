@@ -1,12 +1,12 @@
 package com.map.map.service.auth
 
-import com.map.map.domain.dto.auth.CheckIdDto
+import com.map.map.domain.dto.auth.LoginDto
 import com.map.map.domain.dto.auth.RegisterDto
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
+import com.map.map.domain.response.auth.LoginRo
 
 
 interface AuthService {
     fun register(registerDto: RegisterDto)
-    fun checkId(checkIdDto: CheckIdDto)
+    fun checkId(id: String)
+    fun login(loginDto: LoginDto): LoginRo
 }
