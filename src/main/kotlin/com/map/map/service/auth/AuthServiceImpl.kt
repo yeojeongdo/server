@@ -11,7 +11,6 @@ import com.map.map.enum.JwtType
 import com.map.map.lib.Crypto
 import com.map.map.service.jwt.JwtService
 import com.map.map.service.jwt.JwtServiceImpl
-import com.sun.org.apache.xpath.internal.operations.Bool
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
