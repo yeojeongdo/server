@@ -17,7 +17,7 @@ import javax.crypto.spec.SecretKeySpec
 
 @Service
 class JwtServiceImpl @Autowired constructor(
-    val userRepo: UserRepo,
+    private val userRepo: UserRepo,
 ) : JwtService {
 
     @Value("\${jwt.auth.access}")

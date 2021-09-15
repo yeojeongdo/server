@@ -1,7 +1,9 @@
 package com.map.map.controller
 
+import com.map.map.domain.dto.auth.LoginDto
 import com.map.map.domain.dto.auth.RegisterDto
 import com.map.map.domain.response.Response
+import com.map.map.domain.response.ResponseData
 import com.map.map.service.auth.AuthServiceImpl
 import io.swagger.annotations.ApiOperation
 import org.hibernate.validator.constraints.Length
@@ -18,7 +20,9 @@ class AuthController @Autowired constructor(
 ) {
     @PostMapping("/register")
     @ApiOperation("회원가입")
-    fun register(@RequestBody @Valid registerDto: RegisterDto): Response {
+    fun register(@RequestBody @Valid
+                 registerDto: RegisterDto
+    ): Response {
         authService.register(registerDto)
         return Response(HttpStatus.CREATED, "성공")
     }
@@ -32,6 +36,15 @@ class AuthController @Autowired constructor(
     ): Response {
         authService.checkId(id)
         return Response(HttpStatus.OK, "성공")
+    }
+
+    @PostMapping("/login")
+    @ApiOperation("로그인")
+    fun login(@RequestBody @Valid
+              loginDto: LoginDto
+    ): ResponseData<LoginDto>{
+        val loginRo = authService.login(loginDto)
+        return ResponseData<LoginDto>(HttpStatus.OK, "성공", loginDto)
     }
 
 }
