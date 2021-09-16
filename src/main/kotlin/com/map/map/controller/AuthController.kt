@@ -5,7 +5,6 @@ import com.map.map.domain.dto.auth.LoginDto
 import com.map.map.domain.dto.auth.RegisterDto
 import com.map.map.domain.response.Response
 import com.map.map.domain.response.ResponseData
-import com.map.map.domain.response.auth.LoginRo
 import com.map.map.service.auth.AuthServiceImpl
 import io.swagger.annotations.ApiOperation
 import org.hibernate.validator.constraints.Length
@@ -47,8 +46,8 @@ class AuthController @Autowired constructor(
     @ApiOperation("로그인")
     fun login(@RequestBody @Valid
               loginDto: LoginDto
-    ): ResponseData<LoginRo>{
+    ): ResponseData<LoginDto>{
         val loginRo = authService.login(loginDto)
-        return ResponseData<LoginRo>(HttpStatus.OK, "성공", loginRo)
+        return ResponseData<LoginDto>(HttpStatus.OK, "성공", loginDto)
     }
 }
