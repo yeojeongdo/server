@@ -1,11 +1,13 @@
 package com.map.map.controller
 
+import com.map.map.annotation.AutoLogging
 import com.map.map.domain.dto.auth.LoginDto
 import com.map.map.domain.dto.auth.req.RefreshTokenDto
 import com.map.map.domain.dto.auth.RegisterDto
 import com.map.map.domain.dto.auth.res.UserTokenRes
 import com.map.map.domain.response.Response
 import com.map.map.domain.response.ResponseData
+import com.map.map.domain.response.auth.LoginRo
 import com.map.map.service.auth.AuthServiceImpl
 import com.map.map.service.jwt.JwtService
 import com.map.map.service.jwt.JwtServiceImpl
@@ -23,6 +25,7 @@ class AuthController @Autowired constructor(
     val authService: AuthServiceImpl,
     val jwtService: JwtService
 ) {
+    @AutoLogging
     @PostMapping("/register")
     @ApiOperation("회원가입")
     fun register(@RequestBody @Valid
@@ -32,6 +35,7 @@ class AuthController @Autowired constructor(
         return Response(HttpStatus.CREATED, "성공")
     }
 
+    @AutoLogging
     @GetMapping("/check-id")
     @ApiOperation("아이디 존재 여부")
     fun checkId( @RequestParam @Valid
@@ -43,13 +47,14 @@ class AuthController @Autowired constructor(
         return Response(HttpStatus.OK, "성공")
     }
 
+    @AutoLogging
     @PostMapping("/login")
     @ApiOperation("로그인")
     fun login(@RequestBody @Valid
               loginDto: LoginDto
-    ): ResponseData<LoginDto>{
+    ): ResponseData<LoginRo>{
         val loginRo = authService.login(loginDto)
-        return ResponseData<LoginDto>(HttpStatus.OK, "성공", loginDto)
+        return ResponseData<LoginRo>(HttpStatus.OK, "성공", loginRo)
     }
 
     @PostMapping("/tokenRenewal")
