@@ -1,5 +1,6 @@
 package com.map.map.service.user
 
+import com.map.map.domain.dto.user.PatchUserBirthDateDto
 import com.map.map.domain.dto.user.PatchUserNameDto
 import com.map.map.domain.entity.User
 import com.map.map.domain.entity.backup.UserBackUp
@@ -17,6 +18,9 @@ class UserServiceImpl @Autowired constructor(
     private var userBackUpRepo : UserBackUpRepo
 ) : UserService {
 
+    /**
+     * 유저 이름 변경
+     */
     @Transactional
     override fun changeUserName(patchUserNameDto: PatchUserNameDto, user: User) {
         try{
@@ -28,6 +32,23 @@ class UserServiceImpl @Autowired constructor(
         }
     }
 
+    /**
+     * 유저 생일 변경
+     */
+    @Transactional
+    override fun changeUserBirthDate(patchUserBirthDateDto: PatchUserBirthDateDto, user: User) {
+        try{
+            user.birthDate = patchUserBirthDateDto.birthDate
+            val saveUser = userRepo.save(user)
+            updateUserBackUpData(saveUser)
+        }catch (e : Exception){
+            throw e
+        }
+    }
+
+    /**
+     * 유저 데이터 업데이트
+     */
     private fun updateUserBackUpData(user: User){
         val userBackUp = UserBackUp()
         userToUserBackUp(user, userBackUp)
