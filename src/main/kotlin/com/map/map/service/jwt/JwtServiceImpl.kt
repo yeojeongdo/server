@@ -41,7 +41,7 @@ class JwtServiceImpl : JwtService {
                 secretAccessKey
             }
             JwtType.REFRESH -> {
-                expiredAt = Date(expiredAt.time + 1000 * 60 * 60 * 24 * 7)
+                expiredAt = Date(expiredAt.time + 1000 * 60 * 60 * 24 * 7 * 2)
                 secretRefreshKey
             }
             else -> {
