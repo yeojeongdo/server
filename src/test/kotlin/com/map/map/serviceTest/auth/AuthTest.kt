@@ -73,8 +73,6 @@ class AuthTest {
         registerDto.name = "qqqq"
         registerDto.birthDate = Date()
 
-
-
     }
 
 }
