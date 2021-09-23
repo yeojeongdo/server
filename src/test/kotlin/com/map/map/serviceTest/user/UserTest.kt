@@ -1,6 +1,8 @@
 package com.map.map.serviceTest.user
 
 import com.map.map.domain.dto.auth.RegisterDto
+import com.map.map.domain.dto.user.DeleteUserDto
+import com.map.map.domain.dto.user.PatchUserBirthDateDto
 import com.map.map.domain.dto.user.PatchUserNameDto
 import com.map.map.domain.repository.UserRepo
 import com.map.map.enum.Gender
@@ -13,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @SpringBootTest
-@Transactional
+
 class UserTest {
     @Autowired
     private lateinit var userService: UserService
@@ -24,6 +26,7 @@ class UserTest {
 
 
     @Test
+    @Transactional
     fun changeUserName(){
         var registerDto: RegisterDto = RegisterDto()
         setUser1(registerDto)
@@ -41,6 +44,44 @@ class UserTest {
         val afterUserName = changedUser!!.name!!
 
         assert(beforeUserName+"123" == afterUserName)
+    }
+
+
+    @Test
+    @Transactional
+    fun changeUserBirthDate(){
+        var registerDto: RegisterDto = RegisterDto()
+        setUser1(registerDto)
+
+        authServiceImpl.register(registerDto)
+
+        val user = userRepo.findById(registerDto.id!!)
+        val beforeUserBirthDate = user!!.birthDate!!
+
+        var patchUserBirthDateDto = PatchUserBirthDateDto()
+        patchUserBirthDateDto.birthDate = Date(beforeUserBirthDate.time + 1000)
+        userService.changeUserBirthDate(patchUserBirthDateDto, user)
+
+        val changedUser = userRepo.findById(registerDto.id!!)
+        val afterUserBirthDate = changedUser!!.birthDate
+
+        assert(Date(beforeUserBirthDate.time + 1000) == afterUserBirthDate)
+    }
+
+    @Test
+    @Transactional
+    fun deleteUser(){
+        var registerDto: RegisterDto = RegisterDto()
+        setUser1(registerDto)
+
+        authServiceImpl.register(registerDto)
+        val user = userRepo.findById(registerDto.id!!)
+
+        var deleteUserDto = DeleteUserDto()
+        deleteUserDto.password = registerDto.password
+
+        userService.deleteUser(deleteUserDto, user!!)
+        assert(userRepo.findById(registerDto.id!!) == null)
     }
 
 

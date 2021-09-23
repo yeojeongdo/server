@@ -1,9 +1,8 @@
 package com.map.map.domain.dto.user
 
-import java.util.*
 import javax.validation.constraints.NotNull
 
-class PatchUserBirthDateDto {
+class DeleteUserDto {
     @NotNull(message = "name null 불가능")
-    var birthDate : Date? = null
+    var password : String? = null
 }

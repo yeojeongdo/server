@@ -16,6 +16,7 @@ class JwtFilterConfig(
         val registrationBean: FilterRegistrationBean<JwtAuthenticationFilter> = FilterRegistrationBean()
         registrationBean.filter = JwtAuthenticationFilter(handlerExceptionResolver)
         registrationBean.addUrlPatterns("/")
+        registrationBean.addUrlPatterns("/user/*")
         registrationBean.order = 2
 
         return registrationBean
