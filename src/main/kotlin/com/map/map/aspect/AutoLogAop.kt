@@ -2,10 +2,13 @@ package com.map.map.aspect;
 
 import mu.KotlinLogging
 import org.aspectj.lang.JoinPoint
+import org.aspectj.lang.ProceedingJoinPoint
+import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
 import javax.servlet.http.HttpServletRequest
@@ -31,11 +34,41 @@ class AutoLogAop {
         logger.info(printMessage)
     }
 
+    @Around("logging()")
+    fun aroundMethod(joinPoint: ProceedingJoinPoint): Any {
+        var stopWatch = StopWatch()
+
+        stopWatch.start()
+
+        var signature = joinPoint.signature
+        var methodName = signature.name
+        var className = joinPoint.target.javaClass.name
+        var ip = getIp()
+
+        var proceed = joinPoint.proceed()
+
+        stopWatch.stop()
+
+        var printMessage = makeString(methodName, className, ip!!, stopWatch.totalTimeMillis)
+        logger.info(printMessage)
+
+        return proceed
+    }
+
     private fun makeString(methodName:String, className: String, ip: String): String{
         return StringBuffer().append("\n")
             .append("ip : ").append(ip).append("\n")
             .append("className : ").append(className).append("\n")
             .append("methodName : ").append(methodName).append("\n")
+            .toString()
+    }
+
+    private fun makeString(methodName:String, className: String, ip: String, time: Long): String{
+        return StringBuffer().append("\n")
+            .append("ip : ").append(ip).append("\n")
+            .append("className : ").append(className).append("\n")
+            .append("methodName : ").append(methodName).append("\n")
+            .append("taskTime : ").append(time).append("\n")
             .toString()
     }
 
