@@ -3,21 +3,13 @@ package com.map.map.domain.entity
 import javax.persistence.*
 
 @Entity
+@Table(indexes = [Index(columnList = "address")])
 class Building {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    @Column(nullable = false)
-    var Do: String? = null
-
-    @Column(nullable = false)
-    var si: String? = null
-
-    @Column(nullable = false)
-    var dong: String? = null
-
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     var address: String? = null
 
     //위도

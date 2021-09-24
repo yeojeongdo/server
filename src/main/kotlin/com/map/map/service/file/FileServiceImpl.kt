@@ -9,23 +9,14 @@ import java.nio.file.*
 import java.util.*
 
 @Service
-class FileServiceImpl : FileService{
+class FileServiceImpl() : FileService{
     private var fileStorageLocation: Path = Paths.get("static/").toAbsolutePath().normalize()
-
-//    @Autowired
-//    fun makeDirectory(){
-//        try{
-//            Files.createDirectory(fileStorageLocation)
-//        }catch (e: Exception){
-//            throw e;
-//        }
-//    }
 
     /**
      * 파일 저장
      */
     override fun storeFile(file: MultipartFile): String {
-        val fileName = StringUtils.cleanPath(UUID.randomUUID().toString()+"-"+Objects.nonNull(file.originalFilename)+"."+file.contentType)
+        val fileName = StringUtils.cleanPath(UUID.randomUUID().toString()+"-"+Objects.nonNull(file.originalFilename))
         return try{
             var makeFile = fileStorageLocation.resolve(fileName)
             Files.copy(file.inputStream, makeFile, StandardCopyOption.REPLACE_EXISTING)
