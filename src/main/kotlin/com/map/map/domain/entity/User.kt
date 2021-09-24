@@ -5,6 +5,7 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
+@Table(indexes = [Index(columnList = "idx"), Index(columnList = "id")])
 class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

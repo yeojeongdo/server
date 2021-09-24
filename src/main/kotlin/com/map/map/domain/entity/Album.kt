@@ -4,6 +4,7 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
+@Table(indexes = [Index(columnList = "user_idx"), Index(columnList = "building_idx")])
 class Album {
 
     @Id
