@@ -1,10 +1,12 @@
 package com.map.map.domain.entity
 
 import com.map.map.enum.Gender
+import org.hibernate.annotations.Fetch
 import java.util.*
 import javax.persistence.*
 
 @Entity
+@Table(indexes = [Index(columnList = "idx"), Index(columnList = "id")])
 class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,4 +35,6 @@ class User {
 
     @OneToMany(mappedBy = "user")
     var viewed: MutableList<Viewed> = mutableListOf()
+
+
 }

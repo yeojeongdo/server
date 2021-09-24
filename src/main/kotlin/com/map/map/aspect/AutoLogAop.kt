@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest
 
 private val logger = KotlinLogging.logger {}
 
-
 @Component
 @Aspect
 class AutoLogAop {

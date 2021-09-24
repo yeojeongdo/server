@@ -17,6 +17,7 @@ class JwtFilterConfig(
         registrationBean.filter = JwtAuthenticationFilter(handlerExceptionResolver)
         registrationBean.addUrlPatterns("/")
         registrationBean.addUrlPatterns("/user/*")
+        registrationBean.addUrlPatterns("/album")
         registrationBean.order = 2
 
         return registrationBean
