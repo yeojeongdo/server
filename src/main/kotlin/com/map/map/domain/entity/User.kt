@@ -1,6 +1,7 @@
 package com.map.map.domain.entity
 
 import com.map.map.enum.Gender
+import org.hibernate.annotations.Fetch
 import java.util.*
 import javax.persistence.*
 
@@ -34,4 +35,6 @@ class User {
 
     @OneToMany(mappedBy = "user")
     var viewed: MutableList<Viewed> = mutableListOf()
+
+
 }

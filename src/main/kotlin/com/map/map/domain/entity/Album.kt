@@ -24,7 +24,7 @@ class Album {
     var memo: String? = null
 
     @Column(nullable = false)
-    var date: Date? = null
+    var date: Date? = Date()
 
     @OneToMany(cascade = arrayOf(CascadeType.ALL))
     @JoinColumn(name = "album_idx")
@@ -40,4 +40,13 @@ class Album {
     @OneToMany(cascade = arrayOf(CascadeType.ALL))
     @JoinColumn(name = "album_idx")
     var photo: MutableList<Photo> = mutableListOf()
+
+    fun add(user: User){
+        this.user = user
+        user.albums.add(this)
+    }
+    fun add(building: Building){
+        this.building = building
+        building.albums.add(this)
+    }
 }

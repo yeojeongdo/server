@@ -14,6 +14,7 @@ import org.springframework.web.client.HttpServerErrorException
 import java.security.Key
 import java.util.*
 import javax.crypto.spec.SecretKeySpec
+import javax.transaction.Transactional
 
 @Service
 class JwtServiceImpl : JwtService {
@@ -72,6 +73,7 @@ class JwtServiceImpl : JwtService {
     /**
      * 토큰 유효 검증
      */
+    @Transactional
     override fun validateToken(token: String?): User? {
         try {
             val signInKey: Key = SecretKeySpec(secretAccessKey!!.toByteArray(), signatureAlgorithm.jcaName)
