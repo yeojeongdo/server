@@ -5,6 +5,6 @@ import com.map.map.enum.JwtType
 
 interface JwtService {
     fun createToken(id: String, authType: JwtType): String
-    fun validateToken(token: String?): User?
+    fun validateToken(token: String?): String?
     fun refreshToken(refreshToken: String?): String?
 }

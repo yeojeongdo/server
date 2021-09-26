@@ -39,9 +39,9 @@ class JwtAuthenticationFilter(
                     throw HttpClientErrorException(HttpStatus.BAD_REQUEST, "검증 오류.")
                 }
 
-                val user: User? = jwtServiceImpl.validateToken(token)
+                val userId: String? = jwtServiceImpl.validateToken(token)
 
-                request.setAttribute("user", user)
+                request.setAttribute("userId", userId)
             }
 
             chain.doFilter(request, response)
