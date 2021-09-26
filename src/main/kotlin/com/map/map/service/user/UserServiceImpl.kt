@@ -27,8 +27,9 @@ class UserServiceImpl @Autowired constructor(
      * 유저 이름 변경
      */
     @Transactional
-    override fun changeUserName(patchUserNameDto: PatchUserNameDto, user: User) {
+    override fun changeUserName(patchUserNameDto: PatchUserNameDto, userId: String) {
         try{
+            val user = getUser(userId)
             user.name = patchUserNameDto.name
             val savedUser = userRepo.save(user)
             updateUserBackUpData(savedUser)
@@ -41,8 +42,9 @@ class UserServiceImpl @Autowired constructor(
      * 유저 생일 변경
      */
     @Transactional
-    override fun changeUserBirthDate(patchUserBirthDateDto: PatchUserBirthDateDto, user: User) {
+    override fun changeUserBirthDate(patchUserBirthDateDto: PatchUserBirthDateDto, userId: String) {
         try{
+            val user = getUser(userId)
             user.birthDate = patchUserBirthDateDto.birthDate
             val saveUser = userRepo.save(user)
             updateUserBackUpData(saveUser)
@@ -55,8 +57,9 @@ class UserServiceImpl @Autowired constructor(
      * 유저 삭제
      */
     @Transactional
-    override fun deleteUser(deleteUserDto: DeleteUserDto, user: User) {
+    override fun deleteUser(deleteUserDto: DeleteUserDto, userId: String) {
         try{
+            val user = getUser(userId)
             var password = crypto.sha256(deleteUserDto.password!!)
 
             if(user.password!!.equals(password))
@@ -68,6 +71,14 @@ class UserServiceImpl @Autowired constructor(
         }catch (e : Exception){
             throw e
         }
+    }
+
+    private fun getUser(userId: String): User{
+        var user = userRepo.findById(userId)
+        if(user == null){
+            throw HttpClientErrorException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
+        }
+        return user
     }
 
     /**

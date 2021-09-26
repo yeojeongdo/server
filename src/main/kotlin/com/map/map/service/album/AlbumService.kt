@@ -5,5 +5,5 @@ import com.map.map.domain.entity.User
 import org.springframework.web.multipart.MultipartFile
 
 interface AlbumService {
-    fun makeAlbum(postAlbumDto: PostAlbumDto, user: User)
+    fun makeAlbum(postAlbumDto: PostAlbumDto, userId: String)
 }

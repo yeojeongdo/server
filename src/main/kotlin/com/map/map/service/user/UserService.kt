@@ -6,7 +6,7 @@ import com.map.map.domain.dto.user.PatchUserNameDto
 import com.map.map.domain.entity.User
 
 interface UserService {
-    fun changeUserName(patchUserNameDto: PatchUserNameDto, user: User)
-    fun changeUserBirthDate(patchUserBirthDateDto: PatchUserBirthDateDto, user: User)
-    fun deleteUser(deleteUserDto: DeleteUserDto, user: User)
+    fun changeUserName(patchUserNameDto: PatchUserNameDto, userId: String)
+    fun changeUserBirthDate(patchUserBirthDateDto: PatchUserBirthDateDto, userId: String)
+    fun deleteUser(deleteUserDto: DeleteUserDto, userId: String)
 }
