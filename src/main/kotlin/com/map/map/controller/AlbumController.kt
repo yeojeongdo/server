@@ -25,8 +25,8 @@ class AlbumController @Autowired constructor(
     fun makeAlbum(
         @ModelAttribute @Valid postAlbumDto: PostAlbumDto,
         request : HttpServletRequest): Response {
-        val user = request.getAttribute("user") as User
-        albumService.makeAlbum(postAlbumDto, user)
+        val userId = request.getAttribute("userId") as String
+        albumService.makeAlbum(postAlbumDto, userId)
         return Response(HttpStatus.OK, "성공 ")
     }
 
