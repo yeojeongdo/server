@@ -8,7 +8,9 @@ import com.map.map.domain.repository.UserRepo
 import com.map.map.domain.repository.VisitedRepo
 import com.map.map.service.file.FileServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.multipart.MultipartFile
 import javax.transaction.Transactional
 
@@ -22,41 +24,20 @@ class AlbumServiceImpl @Autowired constructor(
 ) : AlbumService {
 
     @Transactional()
-    override fun makeAlbum(postAlbumDto: PostAlbumDto, user: User) {
+    override fun makeAlbum(postAlbumDto: PostAlbumDto, userId: String) {
         try{
-            var user2 = userRepo.findById(user.id!!)!!
+            var user = getUser(userId)
 
-            var building = buildingRepo.findByAddress(postAlbumDto.address!!)
+            var building = setBuilding(postAlbumDto)
 
-            if(building == null){
-                building = Building()
-                postAlbumDtoToBuilding(postAlbumDto, building)
-            }
+            val visited = setVisited(building, user)
 
-            val visited = Visited()
-            building.visitor.add(visited)
-            visited.building = building
-            user2.visited.add(visited)
-            visited.user = user2
-
-            val photoList : MutableList<Photo> = mutableListOf()
-            for(file: MultipartFile in postAlbumDto.files){
-                val fileName = fileService.storeFile(file)
-                val photo = Photo()
-                photo.filed = fileName
-
-                photoList.add(photo)
-            }
+            val photoList : MutableList<Photo> = saveFile(postAlbumDto.files)
 
             val album = Album()
-            album.memo = postAlbumDto.memo!!
-            album.photo = photoList
-            user2.albums.add(album)
-            album.user = user2
+            setAlbum(album, postAlbumDto, user, building, photoList)
 
-            building.albums.add(album)
-            album.building = building
-
+            visitedRepo.save(visited)
             buildingRepo.save(building)
             albumRepo.save(album)
         }catch (e: Exception){
@@ -64,5 +45,42 @@ class AlbumServiceImpl @Autowired constructor(
         }
     }
 
+    private fun setBuilding(postAlbumDto: PostAlbumDto): Building{
+        var building =  buildingRepo.findByAddress(postAlbumDto.address!!)
+        if(building == null){
+            building = Building()
+            postAlbumDtoToBuilding(postAlbumDto, building)
+        }
+
+        return building
+    }
+
+    private fun setVisited(building: Building, user:User): Visited{
+        val visited = Visited()
+        userAndBuildingToVisited(building, user, visited)
+
+        return visited
+    }
+
+    private fun saveFile(files : List<MultipartFile>) : MutableList<Photo>{
+        val photoList : MutableList<Photo> = mutableListOf()
+        for(file: MultipartFile in files){
+            val fileName = fileService.storeFile(file)
+            val photo = Photo()
+            photo.filed = fileName
+
+            photoList.add(photo)
+        }
+
+        return photoList
+    }
+
+    private fun getUser(userId: String): User{
+        var user = userRepo.findById(userId)
+        if(user == null){
+            throw HttpClientErrorException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
+        }
+        return user
+    }
 
 }

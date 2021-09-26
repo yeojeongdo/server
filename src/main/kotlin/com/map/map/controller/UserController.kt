@@ -23,8 +23,8 @@ class UserController @Autowired constructor(
     @PatchMapping("name")
     @ApiOperation("이름 변경")
     fun updateUserName(@RequestBody @Valid patchUserNameDto: PatchUserNameDto, request: HttpServletRequest): Response {
-        val user = request.getAttribute("user") as User
-        userService.changeUserName(patchUserNameDto, user)
+        val userId = request.getAttribute("userId") as String
+        userService.changeUserName(patchUserNameDto, userId)
         return Response(HttpStatus.OK, "성공")
     }
 
@@ -32,8 +32,8 @@ class UserController @Autowired constructor(
     @PatchMapping("birth-date")
     @ApiOperation("생일 변경")
     fun updateUserBirthDate(@RequestBody @Valid patchUserBirthDateDto: PatchUserBirthDateDto, request: HttpServletRequest) : Response{
-        val user = request.getAttribute("user") as User
-        userService.changeUserBirthDate(patchUserBirthDateDto, user)
+        val userId = request.getAttribute("userId") as String
+        userService.changeUserBirthDate(patchUserBirthDateDto, userId)
         return Response(HttpStatus.OK, "성공")
     }
 
@@ -41,8 +41,8 @@ class UserController @Autowired constructor(
     @DeleteMapping
     @ApiOperation("유저 삭제")
     fun deleteUser(@RequestBody @Valid deleteUserDto: DeleteUserDto, request: HttpServletRequest) : Response{
-        val user = request.getAttribute("user") as User
-        userService.deleteUser(deleteUserDto, user)
+        val userId = request.getAttribute("userId") as String
+        userService.deleteUser(deleteUserDto, userId)
         return Response(HttpStatus.OK, "성공")
     }
 }
