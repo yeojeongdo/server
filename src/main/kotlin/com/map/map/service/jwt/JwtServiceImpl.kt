@@ -74,7 +74,7 @@ class JwtServiceImpl : JwtService {
      * 토큰 유효 검증
      */
     @Transactional
-    override fun validateToken(token: String?): User? {
+    override fun validateToken(token: String?): String? {
         try {
             val signInKey: Key = SecretKeySpec(secretAccessKey!!.toByteArray(), signatureAlgorithm.jcaName)
             val claims: Claims = Jwts.parserBuilder()
@@ -87,7 +87,7 @@ class JwtServiceImpl : JwtService {
                 throw HttpClientErrorException(HttpStatus.UNAUTHORIZED, "토큰 타입 아님")
             }
 
-            return userRepo.findById(claims["id"].toString())
+            return userRepo.findById(claims["id"].toString())?.id
                 ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND, "유저 없음")
         } catch (e: ExpiredJwtException) {
             throw HttpClientErrorException(HttpStatus.GONE, "토큰 만료")
