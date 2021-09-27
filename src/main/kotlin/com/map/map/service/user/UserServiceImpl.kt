@@ -7,6 +7,7 @@ import com.map.map.domain.entity.User
 import com.map.map.domain.entity.backup.UserBackUp
 import com.map.map.domain.entity.backup.repo.UserBackUpRepo
 import com.map.map.domain.repository.UserRepo
+import com.map.map.exception.CustomHttpException
 import com.map.map.lib.Crypto
 import com.map.map.service.auth.userToUserBackUp
 import org.springframework.beans.factory.annotation.Autowired
@@ -65,7 +66,7 @@ class UserServiceImpl @Autowired constructor(
             if(user.password!!.equals(password))
                 userRepo.deleteByIdx(user.idx!!)
             else
-                throw HttpClientErrorException(HttpStatus.BAD_REQUEST, "비밀번호가 다릅니다.")
+                throw CustomHttpException(HttpStatus.BAD_REQUEST, "비밀번호가 다릅니다.")
 
             updateDeletedUserBackupData(user)
         }catch (e : Exception){
@@ -76,7 +77,7 @@ class UserServiceImpl @Autowired constructor(
     private fun getUser(userId: String): User{
         var user = userRepo.findById(userId)
         if(user == null){
-            throw HttpClientErrorException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
+            throw CustomHttpException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
         }
         return user
     }

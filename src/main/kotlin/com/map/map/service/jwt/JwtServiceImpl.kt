@@ -3,6 +3,7 @@ package com.map.map.service.jwt
 import com.map.map.domain.entity.User
 import com.map.map.domain.repository.UserRepo
 import com.map.map.enum.JwtType
+import com.map.map.exception.CustomHttpException
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.SignatureException
 import org.springframework.beans.factory.annotation.Autowired
@@ -84,24 +85,24 @@ class JwtServiceImpl : JwtService {
                 .body
 
             if (claims["authType"].toString() != "ACCESS") {
-                throw HttpClientErrorException(HttpStatus.UNAUTHORIZED, "토큰 타입 아님")
+                throw CustomHttpException(HttpStatus.UNAUTHORIZED, "토큰 타입 아님")
             }
 
             return userRepo.findById(claims["id"].toString())?.id
-                ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND, "유저 없음")
+                ?: throw CustomHttpException(HttpStatus.NOT_FOUND, "유저 없음")
         } catch (e: ExpiredJwtException) {
-            throw HttpClientErrorException(HttpStatus.GONE, "토큰 만료")
+            throw CustomHttpException(HttpStatus.GONE, "토큰 만료")
         } catch (e: SignatureException) {
-            throw HttpClientErrorException(HttpStatus.UNAUTHORIZED, "토큰 위조")
+            throw CustomHttpException(HttpStatus.UNAUTHORIZED, "토큰 위조")
         } catch (e: MalformedJwtException) {
             throw HttpClientErrorException(HttpStatus.UNAUTHORIZED, "토큰 위조")
         } catch (e: IllegalArgumentException) {
-            throw HttpClientErrorException(HttpStatus.BAD_REQUEST, "토큰 없음")
+            throw CustomHttpException(HttpStatus.BAD_REQUEST, "토큰 없음")
         } catch (e: HttpClientErrorException) {
             throw e
         } catch (e: Exception) {
             e.printStackTrace()
-            throw HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류")
+            throw CustomHttpException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류")
         }
     }
 
@@ -111,7 +112,7 @@ class JwtServiceImpl : JwtService {
     override fun refreshToken(refreshToken: String?): String? {
         try {
             if (refreshToken == null || refreshToken.trim().isEmpty()) {
-                throw HttpClientErrorException(HttpStatus.BAD_REQUEST, "검증 오류")
+                throw CustomHttpException(HttpStatus.BAD_REQUEST, "검증 오류")
             }
 
             val signInKey = SecretKeySpec(secretRefreshKey!!.toByteArray(), signatureAlgorithm.jcaName)
@@ -122,26 +123,26 @@ class JwtServiceImpl : JwtService {
                 .body
 
             if (claims["authType"].toString() != "REFRESH") {
-                throw HttpClientErrorException(HttpStatus.UNAUTHORIZED, "토큰 타입 아님")
+                throw CustomHttpException(HttpStatus.UNAUTHORIZED, "토큰 타입 아님")
             }
 
             val user: User = userRepo.findById(claims["id"].toString())
-                ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND, "유저 없음.")
+                ?: throw CustomHttpException(HttpStatus.NOT_FOUND, "유저 없음.")
 
             return this.createToken(user.id!!, JwtType.ACCESS)
         } catch (e: ExpiredJwtException) {
-            throw HttpClientErrorException(HttpStatus.GONE, "토큰 만료")
+            throw CustomHttpException(HttpStatus.GONE, "토큰 만료")
         } catch (e: SignatureException) {
-            throw HttpClientErrorException(HttpStatus.UNAUTHORIZED, "토큰 위조")
+            throw CustomHttpException(HttpStatus.UNAUTHORIZED, "토큰 위조")
         } catch (e: MalformedJwtException) {
-            throw HttpClientErrorException(HttpStatus.UNAUTHORIZED, "토큰 위조")
+            throw CustomHttpException(HttpStatus.UNAUTHORIZED, "토큰 위조")
         } catch (e: IllegalArgumentException) {
-            throw HttpClientErrorException(HttpStatus.BAD_REQUEST, "토큰 없음")
+            throw CustomHttpException(HttpStatus.BAD_REQUEST, "토큰 없음")
         } catch (e: HttpClientErrorException) {
             throw e
         } catch (e: Exception) {
             e.printStackTrace()
-            throw HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류")
+            throw CustomHttpException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류")
         }
     }
 }
