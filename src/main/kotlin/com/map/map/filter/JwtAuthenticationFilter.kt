@@ -35,7 +35,7 @@ class JwtAuthenticationFilter(
 
             // cors
             if (request.method != "OPTIONS") {
-                if (StringUtils.isEmpty(token)) {
+                if (token == null) {
                     throw HttpClientErrorException(HttpStatus.BAD_REQUEST, "검증 오류.")
                 }
 

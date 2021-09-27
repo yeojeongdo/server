@@ -45,9 +45,9 @@ class JwtServiceImpl : JwtService {
                 expiredAt = Date(expiredAt.time + 1000 * 60 * 60 * 24 * 7 * 2)
                 secretRefreshKey
             }
-            else -> {
-                throw HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "토큰 생성 에러")
-            }
+//            else -> {
+//                throw HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "토큰 생성 에러")
+//            }
         }
 
         val signInKey = SecretKeySpec(secretKey!!.toByteArray(), signatureAlgorithm.jcaName)
