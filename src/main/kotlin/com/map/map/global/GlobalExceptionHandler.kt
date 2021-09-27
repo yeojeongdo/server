@@ -1,6 +1,7 @@
 package com.map.map.global
 
 import com.map.map.domain.response.Response
+import com.map.map.exception.CustomHttpException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -11,10 +12,10 @@ import java.lang.Exception
 
 @ControllerAdvice
 class GlobalExceptionHandler {
-    @ExceptionHandler(HttpClientErrorException::class)
-    fun httpClientErrorExceptionHandler(e: HttpClientErrorException):ResponseEntity<Response>{
-        val response = Response(e.statusCode, e.message!!)
-        return ResponseEntity<Response>(response, e.statusCode)
+    @ExceptionHandler(CustomHttpException::class)
+    fun customHttpExceptionHandler(e: CustomHttpException):ResponseEntity<Response>{
+        val response = Response(e.status, e.message)
+        return ResponseEntity<Response>(response, e.status)
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)

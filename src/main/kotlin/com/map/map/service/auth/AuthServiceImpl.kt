@@ -8,6 +8,7 @@ import com.map.map.domain.entity.backup.repo.UserBackUpRepo
 import com.map.map.domain.repository.UserRepo
 import com.map.map.domain.response.auth.LoginRo
 import com.map.map.enum.JwtType
+import com.map.map.exception.CustomHttpException
 import com.map.map.lib.Crypto
 import com.map.map.service.jwt.JwtService
 import com.map.map.service.jwt.JwtServiceImpl
@@ -35,7 +36,7 @@ class AuthServiceImpl @Autowired constructor(
             registerDtoToUser(registerDto, user)
 
             if (checkExistId(user.id!!)) {
-                throw HttpClientErrorException(HttpStatus.FORBIDDEN, "이미 존재하는 유저입니다.")
+                throw CustomHttpException(HttpStatus.FORBIDDEN, "이미 존재하는 유저입니다.")
             }
 
             user.password = crypto.sha256(user.password!!)
@@ -53,7 +54,7 @@ class AuthServiceImpl @Autowired constructor(
      */
     override fun checkId(id: String) {
         if (checkExistId(id)) {
-            throw HttpClientErrorException(HttpStatus.FORBIDDEN, "이미 존재하는 유저입니다.")
+            throw CustomHttpException(HttpStatus.FORBIDDEN, "이미 존재하는 유저입니다.")
         }
     }
 
@@ -85,11 +86,11 @@ class AuthServiceImpl @Autowired constructor(
     private fun checkExistIdAndPassword(id: String, password: String){
         val findUser = userRepo.findById(id);
         if(findUser == null){
-            throw HttpClientErrorException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
+            throw CustomHttpException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
         }
 
         if(findUser.password != crypto.sha256(password)){
-            throw HttpClientErrorException(HttpStatus.BAD_REQUEST, "비밀번호가 다릅니다.")
+            throw CustomHttpException(HttpStatus.BAD_REQUEST, "비밀번호가 다릅니다.")
         }
     }
 
