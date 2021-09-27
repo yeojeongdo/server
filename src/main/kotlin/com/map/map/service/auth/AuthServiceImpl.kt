@@ -73,10 +73,10 @@ class AuthServiceImpl @Autowired constructor(
     /**
      * 유저 백업 데이터 생성
      */
-    private fun addUserBackupData(user: User){
+    fun addUserBackupData(user: User):UserBackUp{
         var userBackUp = UserBackUp()
         userToUserBackUp(user, userBackUp)
-        userBackUpRepo.save(userBackUp)
+        return userBackUpRepo.save(userBackUp)
     }
 
     /**
