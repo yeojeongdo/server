@@ -1,4 +1,4 @@
-package com.map.map.domain.dto.auth.req
+package com.map.map.domain.dto.auth
 
 import javax.validation.constraints.NotBlank
 
