@@ -2,15 +2,14 @@ package com.map.map.controller
 
 import com.map.map.annotation.AutoLogging
 import com.map.map.domain.dto.auth.LoginDto
-import com.map.map.domain.dto.auth.req.RefreshTokenDto
+import com.map.map.domain.dto.auth.RefreshTokenDto
 import com.map.map.domain.dto.auth.RegisterDto
-import com.map.map.domain.dto.auth.res.UserTokenRes
+import com.map.map.domain.response.auth.UserTokenRes
 import com.map.map.domain.response.Response
 import com.map.map.domain.response.ResponseData
 import com.map.map.domain.response.auth.LoginRo
 import com.map.map.service.auth.AuthServiceImpl
 import com.map.map.service.jwt.JwtService
-import com.map.map.service.jwt.JwtServiceImpl
 import io.swagger.annotations.ApiOperation
 import org.hibernate.validator.constraints.Length
 import org.springframework.beans.factory.annotation.Autowired

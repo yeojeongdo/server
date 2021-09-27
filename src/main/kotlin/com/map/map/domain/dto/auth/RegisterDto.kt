@@ -1,5 +1,6 @@
 package com.map.map.domain.dto.auth
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.map.map.enum.Gender
 import org.hibernate.validator.constraints.Length
 import java.util.*
@@ -23,5 +24,6 @@ class RegisterDto {
     var gender: Gender = Gender.Male
 
     @NotNull(message = "birthDate null 불가능")
+    @JsonFormat(pattern="yyyy-MM-dd")
     var birthDate: Date? = null
 }
