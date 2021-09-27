@@ -7,6 +7,7 @@ import com.map.map.domain.entity.User
 import com.map.map.domain.entity.backup.UserBackUp
 import com.map.map.domain.entity.backup.repo.UserBackUpRepo
 import com.map.map.domain.repository.UserRepo
+import com.map.map.domain.response.user.UserInfoRo
 import com.map.map.exception.CustomHttpException
 import com.map.map.lib.Crypto
 import com.map.map.service.auth.userToUserBackUp
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.client.HttpClientErrorException
 import java.util.*
 
 @Service
@@ -100,6 +100,15 @@ class UserServiceImpl @Autowired constructor(
         userToUserBackUp(user, userBackUp)
         userBackUp.deletedDate = Date()
         userBackUpRepo.save(userBackUp)
+    }
+
+    @Transactional(readOnly = true)
+    override fun getUserInfo(userId: String): UserInfoRo {
+        val user = userRepo.findById(userId)
+        val response = UserInfoRo()
+        userToUserInfoRo(user!!, response)
+
+        return response
     }
 
 }
