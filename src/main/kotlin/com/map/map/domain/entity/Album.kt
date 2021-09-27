@@ -37,7 +37,7 @@ class Album {
     @JoinColumn(name = "album_idx")
     var comments: MutableList<Comment> = mutableListOf()
 
-    @OneToMany(cascade = arrayOf(CascadeType.ALL))
+    @OneToMany(cascade = arrayOf(CascadeType.PERSIST))
     @JoinColumn(name = "album_idx")
     var photo: MutableList<Photo> = mutableListOf()
 

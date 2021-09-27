@@ -2,12 +2,9 @@ package com.map.map.service.album
 
 import com.map.map.domain.dto.album.PostAlbumDto
 import com.map.map.domain.entity.*
+import com.map.map.domain.entity.backup.AlbumBackUp
 
-fun postAlbumDtoToBuilding(postAlbumDto: PostAlbumDto, building: Building){
-    building.address = postAlbumDto.address
-    building.latitude = postAlbumDto.latitude
-    building.longitude = postAlbumDto.longitude
-}
+
 
 fun userAndBuildingToVisited(building: Building, user: User, visited: Visited){
     building.visitor.add(visited)
@@ -19,6 +16,7 @@ fun userAndBuildingToVisited(building: Building, user: User, visited: Visited){
 fun setAlbum(album : Album, postAlbumDto: PostAlbumDto, user: User, building: Building, photoList: MutableList<Photo>){
     album.memo = postAlbumDto.memo!!
     album.photo = photoList
+
     user.albums.add(album)
     album.user = user
 

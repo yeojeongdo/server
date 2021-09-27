@@ -34,7 +34,7 @@ class AuthExceptionTest {
             authServiceImpl.register(registerDto)
         }catch (e: HttpClientErrorException){
             e.printStackTrace()
-            assert(e.statusCode == HttpStatus.NOT_FOUND)
+            assert(e.statusCode == HttpStatus.FORBIDDEN)
         }
     }
 

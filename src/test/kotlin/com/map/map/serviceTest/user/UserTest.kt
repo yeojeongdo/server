@@ -38,7 +38,7 @@ class UserTest {
 
         var patchUserNameDto = PatchUserNameDto()
         patchUserNameDto.name = beforeUserName + "123"
-        userService.changeUserName(patchUserNameDto, user)
+        userService.changeUserName(patchUserNameDto, user.id!!)
 
         val changedUser = userRepo.findById(registerDto.id!!)
         val afterUserName = changedUser!!.name!!
@@ -60,7 +60,7 @@ class UserTest {
 
         var patchUserBirthDateDto = PatchUserBirthDateDto()
         patchUserBirthDateDto.birthDate = Date(beforeUserBirthDate.time + 1000)
-        userService.changeUserBirthDate(patchUserBirthDateDto, user)
+        userService.changeUserBirthDate(patchUserBirthDateDto, user.id!!)
 
         val changedUser = userRepo.findById(registerDto.id!!)
         val afterUserBirthDate = changedUser!!.birthDate
@@ -80,7 +80,7 @@ class UserTest {
         var deleteUserDto = DeleteUserDto()
         deleteUserDto.password = registerDto.password
 
-        userService.deleteUser(deleteUserDto, user!!)
+        userService.deleteUser(deleteUserDto, user!!.id!!)
         assert(userRepo.findById(registerDto.id!!) == null)
     }
 
