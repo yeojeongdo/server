@@ -6,6 +6,8 @@ import com.map.map.domain.dto.user.PatchUserBirthDateDto
 import com.map.map.domain.dto.user.PatchUserNameDto
 import com.map.map.domain.entity.User
 import com.map.map.domain.response.Response
+import com.map.map.domain.response.ResponseData
+import com.map.map.domain.response.user.UserInfoRo
 import com.map.map.service.user.UserService
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
@@ -44,5 +46,14 @@ class UserController @Autowired constructor(
         val userId = request.getAttribute("userId") as String
         userService.deleteUser(deleteUserDto, userId)
         return Response(HttpStatus.OK, "성공")
+    }
+
+    @AutoLogging
+    @GetMapping
+    @ApiOperation("유저 정보 확인")
+    fun getUserInfo(request: HttpServletRequest): ResponseData<UserInfoRo> {
+        val userId = request.getAttribute("userId") as String
+        val data = userService.getUserInfo(userId)
+        return ResponseData(HttpStatus.OK, "성공", data)
     }
 }
