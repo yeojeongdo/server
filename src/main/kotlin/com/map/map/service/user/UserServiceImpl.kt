@@ -11,18 +11,25 @@ import com.map.map.domain.response.user.UserInfoRo
 import com.map.map.exception.CustomHttpException
 import com.map.map.lib.Crypto
 import com.map.map.service.auth.userToUserBackUp
+import com.map.map.service.file.FileService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
 @Service
 class UserServiceImpl @Autowired constructor(
     private var userRepo: UserRepo,
     private var userBackUpRepo : UserBackUpRepo,
-    private var crypto: Crypto
+    private var crypto: Crypto,
+    private var fileService: FileService
 ) : UserService {
+    @Value("\${this.server.address}")
+    private val serverAddress : String? = null
+
 
     /**
      * 유저 이름 변경
@@ -74,6 +81,23 @@ class UserServiceImpl @Autowired constructor(
         }
     }
 
+    @Transactional(readOnly = true)
+    override fun getUserInfo(userId: String): UserInfoRo {
+        val user = getUser(userId)
+        val response = UserInfoRo()
+        userToUserInfoRo(user, response)
+
+        return response
+    }
+
+    @Transactional
+    override fun changeUserImage(file: MultipartFile, userId: String) {
+        val user = getUser(userId)
+        val fileName = fileService.storeFile(file)
+        user.image = serverAddress+"/file/"+fileName
+        userRepo.save(user)
+    }
+
     private fun getUser(userId: String): User{
         var user = userRepo.findById(userId)
         if(user == null){
@@ -102,13 +126,6 @@ class UserServiceImpl @Autowired constructor(
         userBackUpRepo.save(userBackUp)
     }
 
-    @Transactional(readOnly = true)
-    override fun getUserInfo(userId: String): UserInfoRo {
-        val user = userRepo.findById(userId)
-        val response = UserInfoRo()
-        userToUserInfoRo(user!!, response)
 
-        return response
-    }
 
 }

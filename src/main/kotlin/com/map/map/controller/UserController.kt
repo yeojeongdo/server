@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
@@ -55,5 +56,14 @@ class UserController @Autowired constructor(
         val userId = request.getAttribute("userId") as String
         val data = userService.getUserInfo(userId)
         return ResponseData(HttpStatus.OK, "성공", data)
+    }
+
+    @AutoLogging
+    @PatchMapping("image")
+    @ApiOperation("프로필 사진 변경")
+    fun patchUserImage(@RequestParam file : MultipartFile, request : HttpServletRequest){
+        val userId = request.getAttribute("userId") as String
+
+
     }
 }

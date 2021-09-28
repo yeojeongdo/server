@@ -6,6 +6,7 @@ import com.map.map.domain.dto.user.PatchUserNameDto
 import com.map.map.domain.entity.User
 import com.map.map.domain.response.user.UserInfoRo
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 
 interface UserService {
     fun changeUserName(patchUserNameDto: PatchUserNameDto, userId: String)
@@ -13,4 +14,5 @@ interface UserService {
     fun deleteUser(deleteUserDto: DeleteUserDto, userId: String)
     @Transactional(readOnly = true)
     fun getUserInfo(userId: String): UserInfoRo
+    fun changeUserImage(file: MultipartFile, userId: String)
 }

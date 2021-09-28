@@ -13,6 +13,7 @@ class PhotoServiceImpl @Autowired constructor(
 ): PhotoService{
     @Value("\${this.server.address}")
     private val serverAddress : String? = null
+
     override fun saveFiles(files : List<MultipartFile>) : MutableList<Photo>{
         val photoList : MutableList<Photo> = mutableListOf()
         for(file: MultipartFile in files){
