@@ -138,7 +138,7 @@ class JwtServiceImpl : JwtService {
             throw CustomHttpException(HttpStatus.UNAUTHORIZED, "토큰 위조")
         } catch (e: IllegalArgumentException) {
             throw CustomHttpException(HttpStatus.BAD_REQUEST, "토큰 없음")
-        } catch (e: HttpClientErrorException) {
+        } catch (e: CustomHttpException) {
             throw e
         } catch (e: Exception) {
             e.printStackTrace()

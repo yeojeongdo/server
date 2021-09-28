@@ -27,6 +27,9 @@ class User {
     @Column(nullable = false)
     var birthDate: Date? = null;
 
+    @Column
+    var image : String? = null;
+
     @OneToMany(mappedBy = "user")
     var visited: MutableList<Visited> = mutableListOf()
 
