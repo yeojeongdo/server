@@ -60,6 +60,18 @@ class AlbumServiceImpl @Autowired constructor(
         }
     }
 
+    @Transactional(readOnly = true)
+    override fun getAlbumListLatest(id: Long?): List<AlbumListRo> {
+        var albumList : MutableList<Album>? = null
+        if(id == null){
+            albumList = albumRepo.findTop10ByOrderByIdxDesc()
+        }else{
+           albumList = albumRepo.findTop10ByIdxLessThanOrderByIdxDesc(id)
+        }
+
+        return this.albumListRoToList(albumList)
+    }
+
     private fun getUser(userId: String): User{
         var user = userRepo.findById(userId)
         if(user == null){
@@ -71,20 +83,16 @@ class AlbumServiceImpl @Autowired constructor(
     /**
      * 엘범 최신순 보기
      */
-    @Transactional(readOnly = true)
-    override fun getAlbumListLatest(pageable: Pageable): List<AlbumListRo> {
-        val albumList = albumListRepo.findAll(pageable)
-        val albums = albumList.content
-        return this.albumListRoToList(albums)
-    }
+
 
     /**
      * AlbumListRo 를 리스트로 만들어주기
      */
     fun albumListRoToList(albums: MutableList<Album>): List<AlbumListRo> {
         var list = mutableListOf<AlbumListRo>()
-        var albumListRo = AlbumListRo()
+
         for (album in albums) {
+            var albumListRo = AlbumListRo()
             albumToAlbumListRo(albumListRo, album)
 
             list.add(albumListRo)

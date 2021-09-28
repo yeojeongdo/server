@@ -36,8 +36,8 @@ class AlbumController @Autowired constructor(
     @AutoLogging
     @GetMapping("/latest")
     @ApiOperation("앨범 최신순 보기")
-    fun getAlbumLatest(pageable: Pageable): ResponseData<List<AlbumListRo>> {
-        val data = albumService.getAlbumListLatest(pageable)
+    fun getAlbumLatest(@RequestParam id : Long?): ResponseData<List<AlbumListRo>> {
+        val data = albumService.getAlbumListLatest(id)
         return ResponseData(HttpStatus.OK, "성공", data)
     }
 }

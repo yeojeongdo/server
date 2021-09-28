@@ -4,6 +4,10 @@ import com.map.map.domain.dto.album.PostAlbumDto
 import com.map.map.domain.entity.*
 import com.map.map.domain.entity.backup.AlbumBackUp
 import com.map.map.domain.response.album.AlbumListRo
+import com.map.map.domain.response.building.BuildingInfoRo
+import com.map.map.domain.response.user.UserInfoRo
+import com.map.map.service.building.buildingToBuildingInfo
+import com.map.map.service.user.userToUserInfoRo
 
 
 fun userAndBuildingToVisited(building: Building, user: User, visited: Visited){
@@ -25,14 +29,16 @@ fun setAlbum(album : Album, postAlbumDto: PostAlbumDto, user: User, building: Bu
 }
 
 fun albumToAlbumListRo(albumListRo: AlbumListRo, album: Album) {
+    albumListRo.id = album.idx
     albumListRo.createDate = album.date
 
     albumListRo.photo = album.photo[0].filed
 
-    albumListRo.userName = album.user!!.name
-    albumListRo.userProfile = album.user!!.image
+    albumListRo.user = UserInfoRo()
+    userToUserInfoRo(album.user!!, albumListRo.user!!)
 
-    albumListRo.address = album.building!!.address
-    albumListRo.latitude = album.building!!.latitude
-    albumListRo.longitude = album.building!!.longitude
+
+    albumListRo.building = BuildingInfoRo()
+    buildingToBuildingInfo(album.building!!, albumListRo.building!!)
 }
+
