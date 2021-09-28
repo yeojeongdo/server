@@ -81,6 +81,9 @@ class UserServiceImpl @Autowired constructor(
         }
     }
 
+    /**
+     * 유저 정보 받아오기
+     */
     @Transactional(readOnly = true)
     override fun getUserInfo(userId: String): UserInfoRo {
         val user = getUser(userId)
@@ -90,6 +93,9 @@ class UserServiceImpl @Autowired constructor(
         return response
     }
 
+    /**
+     * 프로필 사진 변경
+     */
     @Transactional
     override fun changeUserImage(file: MultipartFile, userId: String) {
         val user = getUser(userId)

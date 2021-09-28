@@ -6,17 +6,20 @@ import com.map.map.domain.repository.AlbumRepo
 import com.map.map.domain.repository.BuildingRepo
 import com.map.map.domain.repository.UserRepo
 import com.map.map.domain.repository.VisitedRepo
+import com.map.map.domain.repository.paging.AlbumListRepo
+import com.map.map.domain.response.album.AlbumListRo
 import com.map.map.exception.CustomHttpException
 import com.map.map.service.building.BuildingService
 import com.map.map.service.file.FileServiceImpl
 import com.map.map.service.photo.PhotoService
 import com.map.map.service.visited.VisitedService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.multipart.MultipartFile
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AlbumServiceImpl @Autowired constructor(
@@ -27,6 +30,7 @@ class AlbumServiceImpl @Autowired constructor(
     private var buildingRepo: BuildingRepo,
     private var visitedRepo: VisitedRepo,
     private var userRepo: UserRepo,
+    private var albumListRepo: AlbumListRepo,
 
 ) : AlbumService {
 
@@ -62,5 +66,30 @@ class AlbumServiceImpl @Autowired constructor(
             throw CustomHttpException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
         }
         return user
+    }
+
+    /**
+     * 엘범 최신순 보기
+     */
+    @Transactional(readOnly = true)
+    override fun getAlbumListLatest(pageable: Pageable): List<AlbumListRo> {
+        val albumList = albumListRepo.findAll(pageable)
+        val albums = albumList.content
+        return this.albumListRoToList(albums)
+    }
+
+    /**
+     * AlbumListRo 를 리스트로 만들어주기
+     */
+    fun albumListRoToList(albums: MutableList<Album>): List<AlbumListRo> {
+        var list = mutableListOf<AlbumListRo>()
+        var albumListRo = AlbumListRo()
+        for (album in albums) {
+            albumToAlbumListRo(albumListRo, album)
+
+            list.add(albumListRo)
+        }
+
+        return list
     }
 }
