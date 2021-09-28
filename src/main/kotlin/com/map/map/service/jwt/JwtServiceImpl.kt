@@ -95,7 +95,7 @@ class JwtServiceImpl : JwtService {
         } catch (e: SignatureException) {
             throw CustomHttpException(HttpStatus.UNAUTHORIZED, "토큰 위조")
         } catch (e: MalformedJwtException) {
-            throw HttpClientErrorException(HttpStatus.UNAUTHORIZED, "토큰 위조")
+            throw CustomHttpException(HttpStatus.UNAUTHORIZED, "토큰 위조")
         } catch (e: IllegalArgumentException) {
             throw CustomHttpException(HttpStatus.BAD_REQUEST, "토큰 없음")
         } catch (e: HttpClientErrorException) {
