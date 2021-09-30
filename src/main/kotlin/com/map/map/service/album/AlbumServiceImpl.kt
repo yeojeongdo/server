@@ -2,11 +2,9 @@ package com.map.map.service.album
 
 import com.map.map.domain.dto.album.PostAlbumDto
 import com.map.map.domain.entity.*
-import com.map.map.domain.repository.AlbumRepo
-import com.map.map.domain.repository.BuildingRepo
-import com.map.map.domain.repository.UserRepo
-import com.map.map.domain.repository.VisitedRepo
+import com.map.map.domain.repository.*
 import com.map.map.domain.repository.paging.AlbumListRepo
+import com.map.map.domain.response.album.AlbumDetailRo
 import com.map.map.domain.response.album.AlbumListRo
 import com.map.map.exception.CustomHttpException
 import com.map.map.service.building.BuildingService
@@ -30,6 +28,8 @@ class AlbumServiceImpl @Autowired constructor(
     private var buildingRepo: BuildingRepo,
     private var visitedRepo: VisitedRepo,
     private var userRepo: UserRepo,
+    private var commentRepo: CommentRepo,
+    private var likeRepo: LikeRepo,
     private var albumListRepo: AlbumListRepo,
 
 ) : AlbumService {
@@ -70,6 +70,19 @@ class AlbumServiceImpl @Autowired constructor(
         }
 
         return this.albumListRoToList(albumList)
+    }
+
+    override fun getAlbumDetail(id: Long): AlbumDetailRo {
+        var album : Album? = albumRepo.findByIdx(id)
+
+        if(album == null){
+            throw CustomHttpException(HttpStatus.NOT_FOUND, "앨범을 찾을 수 없음")
+        }
+        var commentNum : Long = commentRepo.countCommentNum(id)
+        var likeNum: Long = likeRepo.countAlbumLikeNum(id)
+        var albumDetailRo = AlbumDetailRo()
+        albumToAlbumDetail(album, commentNum, likeNum, albumDetailRo)
+        return albumDetailRo
     }
 
     private fun getUser(userId: String): User{

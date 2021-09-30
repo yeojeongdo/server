@@ -4,6 +4,7 @@ import com.map.map.domain.dto.album.PostAlbumDto
 import com.map.map.domain.entity.Album
 import com.map.map.domain.entity.User
 import com.map.map.domain.entity.backup.AlbumBackUp
+import com.map.map.domain.response.album.AlbumDetailRo
 import com.map.map.domain.response.album.AlbumListRo
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
@@ -13,4 +14,5 @@ interface AlbumService {
     fun makeAlbum(postAlbumDto: PostAlbumDto, userId: String)
     @Transactional(readOnly = true)
     fun getAlbumListLatest(id: Long?): List<AlbumListRo>
+    fun getAlbumDetail(id:Long): AlbumDetailRo
 }

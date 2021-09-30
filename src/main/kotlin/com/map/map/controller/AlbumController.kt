@@ -5,6 +5,7 @@ import com.map.map.domain.dto.album.PostAlbumDto
 import com.map.map.domain.entity.User
 import com.map.map.domain.response.Response
 import com.map.map.domain.response.ResponseData
+import com.map.map.domain.response.album.AlbumDetailRo
 import com.map.map.domain.response.album.AlbumListRo
 import com.map.map.service.album.AlbumService
 import io.swagger.annotations.ApiOperation
@@ -36,8 +37,16 @@ class AlbumController @Autowired constructor(
     @AutoLogging
     @GetMapping("/latest")
     @ApiOperation("앨범 최신순 보기")
-    fun getAlbumLatest(@RequestParam id : Long?): ResponseData<List<AlbumListRo>> {
+    fun getAlbumListLatest(@RequestParam id : Long?): ResponseData<List<AlbumListRo>> {
         val data = albumService.getAlbumListLatest(id)
+        return ResponseData(HttpStatus.OK, "성공", data)
+    }
+    @AutoLogging
+    @GetMapping("/detail/{albumId}")
+    @ApiOperation("앨범 자세히 보기")
+    fun getAlbumDetail(@PathVariable albumId:Long, request: HttpServletRequest): ResponseData<AlbumDetailRo>{
+        val userId = request.getAttribute("userId") as String
+        val data = albumService.getAlbumDetail(albumId)
         return ResponseData(HttpStatus.OK, "성공", data)
     }
 }

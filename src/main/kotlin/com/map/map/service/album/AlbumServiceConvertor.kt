@@ -3,6 +3,7 @@ package com.map.map.service.album
 import com.map.map.domain.dto.album.PostAlbumDto
 import com.map.map.domain.entity.*
 import com.map.map.domain.entity.backup.AlbumBackUp
+import com.map.map.domain.response.album.AlbumDetailRo
 import com.map.map.domain.response.album.AlbumListRo
 import com.map.map.domain.response.building.BuildingInfoRo
 import com.map.map.domain.response.user.UserInfoRo
@@ -40,5 +41,21 @@ fun albumToAlbumListRo(albumListRo: AlbumListRo, album: Album) {
 
     albumListRo.building = BuildingInfoRo()
     buildingToBuildingInfo(album.building!!, albumListRo.building!!)
+}
+
+fun albumToAlbumDetail(album: Album, commentNum: Long, likeNum: Long, albumDetailRo: AlbumDetailRo){
+    albumDetailRo.id = album.idx
+    albumDetailRo.createDate = album.date
+    albumDetailRo.memo = album.memo
+
+    for (photo in album.photo){
+        albumDetailRo.photo.add(photo.filed!!)
+    }
+
+    albumDetailRo.user = UserInfoRo()
+    userToUserInfoRo(album.user!!, albumDetailRo.user!!)
+
+    albumDetailRo.building = BuildingInfoRo()
+    buildingToBuildingInfo(album.building!!, albumDetailRo.building!!)
 }
 
