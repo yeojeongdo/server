@@ -4,8 +4,9 @@ import com.map.map.enum.Gender
 import java.util.*
 
 class UserInfoRo {
-    var id: String? = null
+    var id: Long? = null
     var name: String? = null
+    var image: String? = null
     var gender: Gender? = null
     var birthDay: Date? = null
 }

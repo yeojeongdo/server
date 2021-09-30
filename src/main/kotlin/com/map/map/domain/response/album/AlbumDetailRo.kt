@@ -4,10 +4,13 @@ import com.map.map.domain.response.building.BuildingInfoRo
 import com.map.map.domain.response.user.UserInfoRo
 import java.util.*
 
-class AlbumListRo {
+class AlbumDetailRo {
     var id : Long? = null
-    var photo: String? = null
+    var photo: MutableList<String> = mutableListOf()
+    var memo : String? = null
     var user : UserInfoRo? = null
     var createDate: Date? = null
     var building: BuildingInfoRo? = null
+    var commentNum: Long = 0
+    var likeNum: Long = 0
 }

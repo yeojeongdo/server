@@ -2,11 +2,9 @@ package com.map.map.service.album
 
 import com.map.map.domain.dto.album.PostAlbumDto
 import com.map.map.domain.entity.*
-import com.map.map.domain.repository.AlbumRepo
-import com.map.map.domain.repository.BuildingRepo
-import com.map.map.domain.repository.UserRepo
-import com.map.map.domain.repository.VisitedRepo
+import com.map.map.domain.repository.*
 import com.map.map.domain.repository.paging.AlbumListRepo
+import com.map.map.domain.response.album.AlbumDetailRo
 import com.map.map.domain.response.album.AlbumListRo
 import com.map.map.exception.CustomHttpException
 import com.map.map.service.building.BuildingService
@@ -30,6 +28,8 @@ class AlbumServiceImpl @Autowired constructor(
     private var buildingRepo: BuildingRepo,
     private var visitedRepo: VisitedRepo,
     private var userRepo: UserRepo,
+    private var commentRepo: CommentRepo,
+    private var likeRepo: LikeRepo,
     private var albumListRepo: AlbumListRepo,
 
 ) : AlbumService {
@@ -60,6 +60,31 @@ class AlbumServiceImpl @Autowired constructor(
         }
     }
 
+    @Transactional(readOnly = true)
+    override fun getAlbumListLatest(id: Long?): List<AlbumListRo> {
+        var albumList : MutableList<Album>? = null
+        if(id == null){
+            albumList = albumRepo.findTop10ByOrderByIdxDesc()
+        }else{
+           albumList = albumRepo.findTop10ByIdxLessThanOrderByIdxDesc(id)
+        }
+
+        return this.albumListRoToList(albumList)
+    }
+
+    override fun getAlbumDetail(id: Long): AlbumDetailRo {
+        var album : Album? = albumRepo.findByIdx(id)
+
+        if(album == null){
+            throw CustomHttpException(HttpStatus.NOT_FOUND, "앨범을 찾을 수 없음")
+        }
+        var commentNum : Long = commentRepo.countCommentNum(id)
+        var likeNum: Long = likeRepo.countAlbumLikeNum(id)
+        var albumDetailRo = AlbumDetailRo()
+        albumToAlbumDetail(album, commentNum, likeNum, albumDetailRo)
+        return albumDetailRo
+    }
+
     private fun getUser(userId: String): User{
         var user = userRepo.findById(userId)
         if(user == null){
@@ -71,20 +96,16 @@ class AlbumServiceImpl @Autowired constructor(
     /**
      * 엘범 최신순 보기
      */
-    @Transactional(readOnly = true)
-    override fun getAlbumListLatest(pageable: Pageable): List<AlbumListRo> {
-        val albumList = albumListRepo.findAll(pageable)
-        val albums = albumList.content
-        return this.albumListRoToList(albums)
-    }
+
 
     /**
      * AlbumListRo 를 리스트로 만들어주기
      */
     fun albumListRoToList(albums: MutableList<Album>): List<AlbumListRo> {
         var list = mutableListOf<AlbumListRo>()
-        var albumListRo = AlbumListRo()
+
         for (album in albums) {
+            var albumListRo = AlbumListRo()
             albumToAlbumListRo(albumListRo, album)
 
             list.add(albumListRo)
