@@ -11,27 +11,19 @@ import org.springframework.util.StringUtils
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.context.support.WebApplicationContextUtils
 import org.springframework.web.servlet.HandlerExceptionResolver
+import org.springframework.web.servlet.HandlerInterceptor
 import javax.servlet.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Component
-class JwtAuthenticationFilter(
-    private val handlerExceptionResolver: HandlerExceptionResolver
-) : Filter {
+class JwtAuthenticationInterceptor @Autowired constructor(
+    private var jwtServiceImpl: JwtServiceImpl
+) : HandlerInterceptor {
 
-    @Autowired
-    private lateinit var jwtServiceImpl: JwtServiceImpl
-
-    override fun init(filterConfig: FilterConfig?) {
-        val ctx: ApplicationContext = WebApplicationContextUtils
-            .getRequiredWebApplicationContext(filterConfig!!.servletContext)
-        this.jwtServiceImpl = ctx.getBean(JwtServiceImpl::class.java)
-    }
-
-    override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
+    override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any) :Boolean{
         try {
-            val token: String = AuthorizationExtractor.extract(request as HttpServletRequest, "Bearer")
+            val token: String = AuthorizationExtractor.extract(request, "Bearer")
 
             // cors
             if (request.method != "OPTIONS") {
@@ -44,14 +36,10 @@ class JwtAuthenticationFilter(
                 request.setAttribute("userId", userId)
             }
 
-            chain.doFilter(request, response)
+            return true
         } catch (e: Exception) {
-            handlerExceptionResolver.resolveException(
-                request as HttpServletRequest,
-                response as HttpServletResponse,
-                null,
-                e
-            )
+
+            throw e;
         }
     }
 }
