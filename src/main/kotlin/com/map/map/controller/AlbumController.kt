@@ -8,6 +8,7 @@ import com.map.map.domain.response.ResponseData
 import com.map.map.domain.response.album.AlbumDetailRo
 import com.map.map.domain.response.album.AlbumListRo
 import com.map.map.service.album.AlbumService
+import io.swagger.annotations.ApiModelProperty
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
@@ -37,7 +38,8 @@ class AlbumController @Autowired constructor(
     @AutoLogging
     @GetMapping("/latest")
     @ApiOperation("앨범 최신순 보기")
-    fun getAlbumListLatest(@RequestParam id : Long?): ResponseData<List<AlbumListRo>> {
+    @ApiModelProperty(required = false, value = "id")
+    fun getAlbumListLatest(@RequestParam  id : Long?): ResponseData<List<AlbumListRo>> {
         val data = albumService.getAlbumListLatest(id)
         return ResponseData(HttpStatus.OK, "성공", data)
     }
