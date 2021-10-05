@@ -47,7 +47,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         configuration.addAllowedOrigin("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
-        configuration.setAllowCredentials(true);
+        configuration.allowCredentials = true
 
         var source = UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
