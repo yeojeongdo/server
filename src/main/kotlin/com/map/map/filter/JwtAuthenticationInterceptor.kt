@@ -1,8 +1,10 @@
 package com.map.map.filter
 
 import com.map.map.domain.entity.User
+import com.map.map.enum.JwtType
 import com.map.map.lib.AuthorizationExtractor
 import com.map.map.service.jwt.JwtServiceImpl
+import io.jsonwebtoken.Claims
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 import org.springframework.http.HttpStatus
@@ -31,14 +33,14 @@ class JwtAuthenticationInterceptor @Autowired constructor(
                     throw HttpClientErrorException(HttpStatus.BAD_REQUEST, "검증 오류.")
                 }
 
-                val userId: String? = jwtServiceImpl.validateToken(token)
+                val claims: Claims = jwtServiceImpl.validateToken(token, JwtType.ACCESS)
+                val userId: String? = claims["id"] as String?
 
                 request.setAttribute("userId", userId)
             }
 
             return true
         } catch (e: Exception) {
-
             throw e;
         }
     }
