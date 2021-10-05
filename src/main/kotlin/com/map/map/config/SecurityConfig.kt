@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import java.util.*
 
 @Configuration
 @EnableWebSecurity
@@ -44,14 +45,14 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     fun corsConfiguration() : CorsConfigurationSource{
         var configuration = CorsConfiguration();
 
-        configuration.addAllowedOrigin("*");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
+        configuration.allowedOriginPatterns = Collections.singletonList("*")
+        configuration.addAllowedHeader("*")
+        configuration.addAllowedMethod("*")
         configuration.allowCredentials = true
 
-        var source = UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+        var source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", configuration)
+        return source
     }
 
 }
