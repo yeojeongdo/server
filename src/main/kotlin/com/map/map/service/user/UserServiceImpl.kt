@@ -104,12 +104,8 @@ class UserServiceImpl @Autowired constructor(
         userRepo.save(user)
     }
 
-    private fun getUser(userId: String): User{
-        var user = userRepo.findById(userId)
-        if(user == null){
-            throw CustomHttpException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
-        }
-        return user
+    override fun getUser(userId: String): User{
+        return userRepo.findById(userId) ?: throw CustomHttpException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
     }
 
     /**
