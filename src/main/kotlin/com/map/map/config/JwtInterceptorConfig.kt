@@ -13,7 +13,7 @@ class JwtInterceptorConfig @Autowired constructor(
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(jwtAuthenticationFilter)
             .addPathPatterns("/user")
-            .addPathPatterns("/user/*")
+            .addPathPatterns("/user/**")
             .addPathPatterns("/album")
             .addPathPatterns("/album/**")
     }
