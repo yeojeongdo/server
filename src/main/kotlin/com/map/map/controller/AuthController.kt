@@ -4,7 +4,6 @@ import com.map.map.annotation.AutoLogging
 import com.map.map.domain.dto.auth.LoginDto
 import com.map.map.domain.dto.auth.RefreshTokenDto
 import com.map.map.domain.dto.auth.RegisterDto
-import com.map.map.domain.response.auth.UserTokenRes
 import com.map.map.domain.response.Response
 import com.map.map.domain.response.ResponseData
 import com.map.map.domain.response.auth.LoginRo
@@ -59,10 +58,8 @@ class AuthController @Autowired constructor(
     @AutoLogging
     @PostMapping("/token-renewal")
     @ApiOperation("토큰 갱신")
-    fun tokenRenewal(@RequestBody @Valid refreshTokenDto: RefreshTokenDto): ResponseData<UserTokenRes> {
-        val data: UserTokenRes = jwtService.refreshToken(
-            refreshTokenDto.refreshToken,
-            refreshTokenDto.accessToken)
+    fun tokenRenewal(@RequestBody @Valid refreshTokenDto: RefreshTokenDto): ResponseData<LoginRo> {
+        val data: LoginRo = jwtService.refreshToken(refreshTokenDto.refreshToken!!)
 
         return ResponseData(HttpStatus.OK, "토큰 갱신 성공", data)
     }
