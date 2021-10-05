@@ -60,8 +60,9 @@ class AuthController @Autowired constructor(
     @PostMapping("/token-renewal")
     @ApiOperation("토큰 갱신")
     fun tokenRenewal(@RequestBody @Valid refreshTokenDto: RefreshTokenDto): ResponseData<UserTokenRes> {
-        val accessToken: String? = jwtService.refreshToken(refreshTokenDto.token)
-        val data = UserTokenRes(accessToken!!)
+        val data: UserTokenRes = jwtService.refreshToken(
+            refreshTokenDto.refreshToken,
+            refreshTokenDto.accessToken)
 
         return ResponseData(HttpStatus.OK, "토큰 갱신 성공", data)
     }
