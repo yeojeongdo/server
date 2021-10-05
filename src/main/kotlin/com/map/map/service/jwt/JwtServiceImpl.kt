@@ -2,6 +2,7 @@ package com.map.map.service.jwt
 
 import com.map.map.domain.entity.User
 import com.map.map.domain.repository.UserRepo
+import com.map.map.domain.response.auth.UserTokenRes
 import com.map.map.enum.JwtType
 import com.map.map.exception.CustomHttpException
 import io.jsonwebtoken.*
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.HttpServerErrorException
 import java.security.Key
 import java.util.*
 import javax.crypto.spec.SecretKeySpec
@@ -31,6 +31,9 @@ class JwtServiceImpl : JwtService {
 
     val signatureAlgorithm: SignatureAlgorithm = SignatureAlgorithm.HS256
 
+    private val TIME: Long = 1000 * 60 * 60
+    private val TWOWEEKS: Long = TIME * 24 * 7 * 2
+
     /**
      * 토큰 생성
      */
@@ -39,16 +42,13 @@ class JwtServiceImpl : JwtService {
 
         val secretKey: String? = when (authType) {
             JwtType.ACCESS -> {
-                expiredAt = Date(expiredAt.time + 1000 * 60 * 60)
+                expiredAt = Date(expiredAt.time + TIME)
                 secretAccessKey
             }
             JwtType.REFRESH -> {
-                expiredAt = Date(expiredAt.time + 1000 * 60 * 60 * 24 * 7 * 2)
+                expiredAt = Date(expiredAt.time + TWOWEEKS)
                 secretRefreshKey
             }
-//            else -> {
-//                throw HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "토큰 생성 에러")
-//            }
         }
 
         val signInKey = SecretKeySpec(secretKey!!.toByteArray(), signatureAlgorithm.jcaName)
@@ -109,11 +109,9 @@ class JwtServiceImpl : JwtService {
     /**
      * 토큰 갱신
      */
-    override fun refreshToken(refreshToken: String?): String? {
+    override fun refreshToken(refreshToken: String?, accessToken: String?): UserTokenRes {
         try {
-            if (refreshToken == null || refreshToken.trim().isEmpty()) {
-                throw CustomHttpException(HttpStatus.BAD_REQUEST, "검증 오류")
-            }
+            tokenNotNull(refreshToken)
 
             val signInKey = SecretKeySpec(secretRefreshKey!!.toByteArray(), signatureAlgorithm.jcaName)
             val claims = Jwts.parserBuilder()
@@ -129,7 +127,16 @@ class JwtServiceImpl : JwtService {
             val user: User = userRepo.findById(claims["id"].toString())
                 ?: throw CustomHttpException(HttpStatus.NOT_FOUND, "유저 없음.")
 
-            return this.createToken(user.id!!, JwtType.ACCESS)
+            val accessTokenRes = this.createToken(user.id!!, JwtType.ACCESS)
+            val refreshTokenRes: String
+            val accessTokenExp = this.getAccessTokenExp(accessToken)
+            refreshTokenRes = if (claims["exp"].toString().toLong() - accessTokenExp < TWOWEEKS / 2) {
+                this.createToken(user.id!!, JwtType.REFRESH)
+            } else {
+                refreshToken!!
+            }
+
+            return UserTokenRes(accessTokenRes, refreshTokenRes)
         } catch (e: ExpiredJwtException) {
             throw CustomHttpException(HttpStatus.GONE, "토큰 만료")
         } catch (e: SignatureException) {
@@ -143,6 +150,35 @@ class JwtServiceImpl : JwtService {
         } catch (e: Exception) {
             e.printStackTrace()
             throw CustomHttpException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류")
+        }
+    }
+
+    /**
+     * 토큰 null 확인
+     */
+    private fun tokenNotNull(token: String?) {
+        if (token == null || token.trim().isEmpty()) {
+            throw CustomHttpException(HttpStatus.BAD_REQUEST, "검증 오류")
+        }
+    }
+
+    /**
+     * accessToken 만료시간 얻기
+     */
+    private fun getAccessTokenExp(accessToken: String?): Long {
+        try {
+            tokenNotNull(accessToken)
+
+            val signInKey = SecretKeySpec(secretRefreshKey!!.toByteArray(), signatureAlgorithm.jcaName)
+            val claims = Jwts.parserBuilder()
+                .setSigningKey(signInKey)
+                .build()
+                .parseClaimsJws(accessToken)
+                .body
+
+            return claims["exp"].toString().toLong()
+        } catch (e: Exception) {
+            throw CustomHttpException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러")
         }
     }
 }
