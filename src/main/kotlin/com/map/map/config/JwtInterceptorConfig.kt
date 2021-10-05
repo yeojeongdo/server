@@ -16,6 +16,8 @@ class JwtInterceptorConfig @Autowired constructor(
             .addPathPatterns("/user/**")
             .addPathPatterns("/album")
             .addPathPatterns("/album/**")
+            .addPathPatterns("/comment")
+            .addPathPatterns("/comment/**")
     }
 
 }

@@ -47,6 +47,8 @@ fun albumToAlbumDetail(album: Album, commentNum: Long, likeNum: Long, albumDetai
     albumDetailRo.id = album.idx
     albumDetailRo.createDate = album.date
     albumDetailRo.memo = album.memo
+    albumDetailRo.commentNum = commentNum
+    albumDetailRo.likeNum = likeNum
 
     for (photo in album.photo){
         albumDetailRo.photo.add(photo.filed!!)
