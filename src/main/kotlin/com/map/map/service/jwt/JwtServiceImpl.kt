@@ -2,7 +2,7 @@ package com.map.map.service.jwt
 
 import com.map.map.domain.entity.User
 import com.map.map.domain.repository.UserRepo
-import com.map.map.domain.response.auth.UserTokenRes
+import com.map.map.domain.response.auth.LoginRo
 import com.map.map.enum.JwtType
 import com.map.map.exception.CustomHttpException
 import io.jsonwebtoken.*
@@ -32,26 +32,17 @@ class JwtServiceImpl : JwtService {
     val signatureAlgorithm: SignatureAlgorithm = SignatureAlgorithm.HS256
 
     private val TIME: Long = 1000 * 60 * 60
+    private val CAN_REFRESH_REFRESH_TOKEN_TIME = TIME * 24 * 3
     private val TWOWEEKS: Long = TIME * 24 * 7 * 2
 
     /**
      * 토큰 생성
      */
     override fun createToken(id: String, authType: JwtType): String {
-        var expiredAt = Date()
 
-        val secretKey: String? = when (authType) {
-            JwtType.ACCESS -> {
-                expiredAt = Date(expiredAt.time + TIME)
-                secretAccessKey
-            }
-            JwtType.REFRESH -> {
-                expiredAt = Date(expiredAt.time + TWOWEEKS)
-                secretRefreshKey
-            }
-        }
 
-        val signInKey = SecretKeySpec(secretKey!!.toByteArray(), signatureAlgorithm.jcaName)
+        val signInKey = getKey(authType)
+        val expiredAt = getExpiredAt(authType)
 
         val headerMap: MutableMap<String, Any> = HashMap()
 
@@ -71,25 +62,22 @@ class JwtServiceImpl : JwtService {
             .compact()
     }
 
+
     /**
      * 토큰 유효 검증
      */
     @Transactional
-    override fun validateToken(token: String?): String? {
+    override fun validateToken(token: String, authType: JwtType): Claims {
+
         try {
+            val key = getKey(authType)
             val signInKey: Key = SecretKeySpec(secretAccessKey!!.toByteArray(), signatureAlgorithm.jcaName)
-            val claims: Claims = Jwts.parserBuilder()
-                .setSigningKey(signInKey)
+            return Jwts.parserBuilder()
+                .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .body
 
-            if (claims["authType"].toString() != "ACCESS") {
-                throw CustomHttpException(HttpStatus.UNAUTHORIZED, "토큰 타입 아님")
-            }
-
-            return userRepo.findById(claims["id"].toString())?.id
-                ?: throw CustomHttpException(HttpStatus.NOT_FOUND, "유저 없음")
         } catch (e: ExpiredJwtException) {
             throw CustomHttpException(HttpStatus.GONE, "토큰 만료")
         } catch (e: SignatureException) {
@@ -109,16 +97,11 @@ class JwtServiceImpl : JwtService {
     /**
      * 토큰 갱신
      */
-    override fun refreshToken(refreshToken: String?, accessToken: String?): UserTokenRes {
+    override fun refreshToken(refreshToken: String): LoginRo {
         try {
             tokenNotNull(refreshToken)
 
-            val signInKey = SecretKeySpec(secretRefreshKey!!.toByteArray(), signatureAlgorithm.jcaName)
-            val claims = Jwts.parserBuilder()
-                .setSigningKey(signInKey)
-                .build()
-                .parseClaimsJws(refreshToken)
-                .body
+            val claims = validateToken(refreshToken, JwtType.REFRESH)
 
             if (claims["authType"].toString() != "REFRESH") {
                 throw CustomHttpException(HttpStatus.UNAUTHORIZED, "토큰 타입 아님")
@@ -128,15 +111,14 @@ class JwtServiceImpl : JwtService {
                 ?: throw CustomHttpException(HttpStatus.NOT_FOUND, "유저 없음.")
 
             val accessTokenRes = this.createToken(user.id!!, JwtType.ACCESS)
-            val refreshTokenRes: String
-            val accessTokenExp = this.getAccessTokenExp(accessToken)
-            refreshTokenRes = if (claims["exp"].toString().toLong() - accessTokenExp < TWOWEEKS / 2) {
+
+            val refreshTokenRes = if (claims.expiration.time - Date().time < CAN_REFRESH_REFRESH_TOKEN_TIME) {
                 this.createToken(user.id!!, JwtType.REFRESH)
             } else {
-                refreshToken!!
+                refreshToken
             }
 
-            return UserTokenRes(accessTokenRes, refreshTokenRes)
+            return LoginRo(accessTokenRes, refreshTokenRes)
         } catch (e: ExpiredJwtException) {
             throw CustomHttpException(HttpStatus.GONE, "토큰 만료")
         } catch (e: SignatureException) {
@@ -163,22 +145,34 @@ class JwtServiceImpl : JwtService {
     }
 
     /**
-     * accessToken 만료시간 얻기
+     * 키생성
      */
-    private fun getAccessTokenExp(accessToken: String?): Long {
-        try {
-            tokenNotNull(accessToken)
+    private fun getKey(authType: JwtType) : Key {
 
-            val signInKey = SecretKeySpec(secretRefreshKey!!.toByteArray(), signatureAlgorithm.jcaName)
-            val claims = Jwts.parserBuilder()
-                .setSigningKey(signInKey)
-                .build()
-                .parseClaimsJws(accessToken)
-                .body
-
-            return claims["exp"].toString().toLong()
-        } catch (e: Exception) {
-            throw CustomHttpException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러")
+        val secretKey: String? = when (authType) {
+            JwtType.ACCESS -> {
+                secretAccessKey
+            }
+            JwtType.REFRESH -> {
+                secretRefreshKey
+            }
         }
+        return SecretKeySpec(secretKey!!.toByteArray(), signatureAlgorithm.jcaName)
+    }
+
+    /**
+     * 만료시간 생성
+     */
+    private fun getExpiredAt(authType: JwtType): Date{
+        var expiredAt = Date()
+        when (authType) {
+            JwtType.ACCESS -> {
+                expiredAt = Date(expiredAt.time + TIME)
+            }
+            JwtType.REFRESH -> {
+                expiredAt = Date(expiredAt.time + TWOWEEKS)
+            }
+        }
+        return expiredAt
     }
 }
