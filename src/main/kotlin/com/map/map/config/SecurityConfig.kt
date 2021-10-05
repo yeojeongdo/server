@@ -19,9 +19,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     private var jwtFilter : JwtAuthenticationInterceptor? = null
     override fun configure(web: WebSecurity) {
         web.ignoring()
-            .antMatchers("/file","file/**")
-            .antMatchers("/auth","auth/**")
-            .antMatchers("/swagger-ui.html")
             .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
     }
 
@@ -32,6 +29,9 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .and()
             .csrf().disable()
             .authorizeRequests()
+            .antMatchers("/file","file/**").permitAll()
+            .antMatchers("/auth","auth/**").permitAll()
+            .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/user","/user/**").permitAll()
                 .antMatchers("/album","album/**").permitAll()
             .and()
