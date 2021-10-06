@@ -25,8 +25,7 @@ class CommentServiceImpl @Autowired constructor(
         val album = albumService.findAlbum(postCommentDto.id!!)
 
         val comment = Comment()
-        comment.content = postCommentDto.comment
-        comment.user = user
+        postCommentDtoAndUserToComment(postCommentDto, user, comment)
 
         album.comments.add(comment)
 
