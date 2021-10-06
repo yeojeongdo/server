@@ -34,12 +34,12 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .and()
             .csrf().disable()
             .authorizeRequests()
-            .antMatchers("/file","file/**").permitAll()
-            .antMatchers("/auth","auth/**").permitAll()
-            .antMatchers("/swagger-ui.html").permitAll()
+                .antMatchers("/file","file/**").permitAll()
+                .antMatchers("/auth","auth/**").permitAll()
+                .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/user","/user/**").permitAll()
                 .antMatchers("/album","album/**").permitAll()
-            .and()
+
     }
     @Bean
     fun corsConfiguration() : CorsConfigurationSource{

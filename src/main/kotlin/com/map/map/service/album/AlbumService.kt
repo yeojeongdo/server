@@ -15,4 +15,5 @@ interface AlbumService {
     @Transactional(readOnly = true)
     fun getAlbumListLatest(id: Long?): List<AlbumListRo>
     fun getAlbumDetail(id:Long): AlbumDetailRo
+    fun findAlbum(id:Long):Album
 }

@@ -15,4 +15,5 @@ interface UserService {
     @Transactional(readOnly = true)
     fun getUserInfo(userId: String): UserInfoRo
     fun changeUserImage(file: MultipartFile, userId: String)
+    fun getUser(userId : String) : User
 }

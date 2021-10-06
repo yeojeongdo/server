@@ -10,6 +10,7 @@ import com.map.map.exception.CustomHttpException
 import com.map.map.service.building.BuildingService
 import com.map.map.service.file.FileServiceImpl
 import com.map.map.service.photo.PhotoService
+import com.map.map.service.user.UserService
 import com.map.map.service.visited.VisitedService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
@@ -31,6 +32,7 @@ class AlbumServiceImpl @Autowired constructor(
     private var commentRepo: CommentRepo,
     private var likeRepo: LikeRepo,
     private var albumListRepo: AlbumListRepo,
+    private var userService: UserService
 
 ) : AlbumService {
 
@@ -40,7 +42,7 @@ class AlbumServiceImpl @Autowired constructor(
     @Transactional
     override fun makeAlbum(postAlbumDto: PostAlbumDto, userId: String) {
         try{
-            var user = getUser(userId)
+            var user = userService.getUser(userId)
 
             var building = buildingService.setBuilding(postAlbumDto)
 
@@ -60,6 +62,9 @@ class AlbumServiceImpl @Autowired constructor(
         }
     }
 
+    /**
+     * 엘범 최신순 보기
+     */
     @Transactional(readOnly = true)
     override fun getAlbumListLatest(id: Long?): List<AlbumListRo> {
         var albumList : MutableList<Album>? = null
@@ -72,31 +77,19 @@ class AlbumServiceImpl @Autowired constructor(
         return this.albumListRoToList(albumList)
     }
 
+    /**
+     * 엘범 상세 정보
+     */
     override fun getAlbumDetail(id: Long): AlbumDetailRo {
-        var album : Album? = albumRepo.findByIdx(id)
+        var album : Album = findAlbum(id)
 
-        if(album == null){
-            throw CustomHttpException(HttpStatus.NOT_FOUND, "앨범을 찾을 수 없음")
-        }
         var commentNum : Long = commentRepo.countCommentNum(id)
         var likeNum: Long = likeRepo.countAlbumLikeNum(id)
+
         var albumDetailRo = AlbumDetailRo()
         albumToAlbumDetail(album, commentNum, likeNum, albumDetailRo)
         return albumDetailRo
     }
-
-    private fun getUser(userId: String): User{
-        var user = userRepo.findById(userId)
-        if(user == null){
-            throw CustomHttpException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
-        }
-        return user
-    }
-
-    /**
-     * 엘범 최신순 보기
-     */
-
 
     /**
      * AlbumListRo 를 리스트로 만들어주기
@@ -112,5 +105,10 @@ class AlbumServiceImpl @Autowired constructor(
         }
 
         return list
+    }
+
+    override fun findAlbum(id:Long) : Album {
+        return albumRepo.findByIdx(id) ?: throw CustomHttpException(HttpStatus.NOT_FOUND, "앨범을 찾을 수 없음")
+
     }
 }

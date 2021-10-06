@@ -84,10 +84,7 @@ class AuthServiceImpl @Autowired constructor(
      * 아이디 비번 체크
      */
     private fun checkExistIdAndPassword(id: String, password: String){
-        val findUser = userRepo.findById(id);
-        if(findUser == null){
-            throw CustomHttpException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
-        }
+        val findUser = userRepo.findById(id) ?: throw CustomHttpException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.");
 
         if(findUser.password != crypto.sha256(password)){
             throw CustomHttpException(HttpStatus.BAD_REQUEST, "비밀번호가 다릅니다.")
