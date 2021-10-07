@@ -61,3 +61,18 @@ fun albumToAlbumDetail(album: Album, commentNum: Long, likeNum: Long, albumDetai
     buildingToBuildingInfo(album.building!!, albumDetailRo.building!!)
 }
 
+/**
+ * AlbumListRo 를 리스트로 만들어주기
+ */
+fun albumListRoToList(albums: MutableList<Album>): List<AlbumListRo> {
+    var list = mutableListOf<AlbumListRo>()
+
+    for (album in albums) {
+        var albumListRo = AlbumListRo()
+        albumToAlbumListRo(albumListRo, album)
+
+        list.add(albumListRo)
+    }
+
+    return list
+}
