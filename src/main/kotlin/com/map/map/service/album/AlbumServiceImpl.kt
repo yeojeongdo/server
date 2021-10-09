@@ -3,7 +3,8 @@ package com.map.map.service.album
 import com.map.map.domain.dto.album.PostAlbumDto
 import com.map.map.domain.entity.*
 import com.map.map.domain.repository.*
-import com.map.map.domain.repository.paging.AlbumListRepo
+import com.map.map.domain.repository.querydsl.CommentQuery
+import com.map.map.domain.repository.querydsl.LikeQuery
 import com.map.map.domain.response.album.AlbumDetailRo
 import com.map.map.domain.response.album.AlbumListRo
 import com.map.map.exception.CustomHttpException
@@ -29,9 +30,8 @@ class AlbumServiceImpl @Autowired constructor(
     private var buildingRepo: BuildingRepo,
     private var visitedRepo: VisitedRepo,
     private var userRepo: UserRepo,
-    private var commentRepo: CommentRepo,
-    private var likeRepo: LikeRepo,
-    private var albumListRepo: AlbumListRepo,
+    private var commentQuery: CommentQuery,
+    private var likeQuery: LikeQuery,
     private var userService: UserService
 
 ) : AlbumService {
@@ -74,7 +74,7 @@ class AlbumServiceImpl @Autowired constructor(
            albumList = albumRepo.findTop10ByIdxLessThanOrderByIdxDesc(id)
         }
 
-        return this.albumListRoToList(albumList)
+        return albumListRoToList(albumList)
     }
 
     /**
@@ -83,28 +83,12 @@ class AlbumServiceImpl @Autowired constructor(
     override fun getAlbumDetail(id: Long): AlbumDetailRo {
         var album : Album = findAlbum(id)
 
-        var commentNum : Long = commentRepo.countCommentNum(id)
-        var likeNum: Long = likeRepo.countAlbumLikeNum(id)
+        var commentNum : Long = commentQuery.getCommentNum(id)
+        var likeNum: Long = likeQuery.getLikeNum(id)
 
         var albumDetailRo = AlbumDetailRo()
         albumToAlbumDetail(album, commentNum, likeNum, albumDetailRo)
         return albumDetailRo
-    }
-
-    /**
-     * AlbumListRo 를 리스트로 만들어주기
-     */
-    fun albumListRoToList(albums: MutableList<Album>): List<AlbumListRo> {
-        var list = mutableListOf<AlbumListRo>()
-
-        for (album in albums) {
-            var albumListRo = AlbumListRo()
-            albumToAlbumListRo(albumListRo, album)
-
-            list.add(albumListRo)
-        }
-
-        return list
     }
 
     override fun findAlbum(id:Long) : Album {
