@@ -51,4 +51,11 @@ class CommentServiceImpl @Autowired constructor(
 
         return commentRoList
     }
+
+    @Transactional
+    override fun deleteComment(commentId: Long, userId: String) {
+        val user = userService.getUser(userId)
+
+        commentRepo.deleteByIdxAndUser(commentId, user)
+    }
 }

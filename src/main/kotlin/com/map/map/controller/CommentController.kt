@@ -34,4 +34,12 @@ class CommentController @Autowired constructor(
         val data = commentService.getCommentList(albumId, lastCommentId)
         return ResponseData(HttpStatus.OK, "성공", data)
     }
+
+    @AutoLogging
+    @DeleteMapping("/{commentId}")
+    fun deleteComment(@PathVariable commentId:Long, request: HttpServletRequest): Response {
+        val userId = request.getAttribute("userId") as String
+        commentService.deleteComment(commentId, userId)
+        return Response(HttpStatus.OK, "성공")
+    }
 }
