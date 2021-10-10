@@ -11,4 +11,5 @@ interface CommentRepo : JpaRepository<Comment, Long> {
     fun countCommentNum(@Param("id") id:Long):Long
 
     fun deleteByIdxAndUser(idx:Long, user: User)
+    fun findByIdxAndUser(idx:Long, user: User):Comment?
 }

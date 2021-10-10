@@ -37,9 +37,20 @@ class CommentController @Autowired constructor(
 
     @AutoLogging
     @DeleteMapping("/{commentId}")
+    @ApiOperation("댓글 삭제")
     fun deleteComment(@PathVariable commentId:Long, request: HttpServletRequest): Response {
         val userId = request.getAttribute("userId") as String
         commentService.deleteComment(commentId, userId)
         return Response(HttpStatus.OK, "성공")
+    }
+
+    @AutoLogging
+    @PatchMapping
+    @ApiOperation("댓글 수정")
+    fun updateComment(@RequestBody @Valid postCommentDto: PostCommentDto, request: HttpServletRequest): Response{
+        val userId = request.getAttribute("userId") as String
+        commentService.patchComment(postCommentDto, userId)
+        return Response(HttpStatus.OK, "성공")
+
     }
 }

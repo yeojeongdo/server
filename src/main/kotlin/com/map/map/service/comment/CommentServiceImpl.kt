@@ -6,9 +6,11 @@ import com.map.map.domain.repository.AlbumRepo
 import com.map.map.domain.repository.CommentRepo
 import com.map.map.domain.repository.querydsl.CommentQuery
 import com.map.map.domain.response.comment.CommentRo
+import com.map.map.exception.CustomHttpException
 import com.map.map.service.album.AlbumService
 import com.map.map.service.user.UserService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -57,5 +59,17 @@ class CommentServiceImpl @Autowired constructor(
         val user = userService.getUser(userId)
 
         commentRepo.deleteByIdxAndUser(commentId, user)
+    }
+
+    @Transactional
+    override fun patchComment(commentDto: PostCommentDto, userId: String) {
+        val user = userService.getUser(userId)
+
+        val comment = commentRepo.findByIdxAndUser(commentDto.id!!, user)
+            ?: throw CustomHttpException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다.")
+
+        comment.content = commentDto.comment
+
+        commentRepo.save(comment)
     }
 }
