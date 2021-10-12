@@ -19,7 +19,7 @@ class FollowServiceImpl @Autowired constructor(
         var me = userService.getUser(userId)
         var targetUser = userService.getUser(userIdx)
 
-        var follow = followRepo.findByFollowerAndFollowing(me, targetUser) ?: Follow(me, targetUser);
+        var follow = followRepo.findByFollowerAndFollowing(me, targetUser) ?: Follow(me, targetUser)
         follow.state = !follow.state
 
         followRepo.save(follow)
@@ -35,6 +35,18 @@ class FollowServiceImpl @Autowired constructor(
         followerNumAndFollowingNumToFollowNumDto(follower, following, followNumbersDto)
 
         return followNumbersDto
+    }
+
+    override fun getFollowState(userIdx: Long, userId: String): Boolean {
+        var me = userService.getUser(userId)
+        var targetUser = userService.getUser(userIdx)
+
+        var follow = followRepo.findByFollowerAndFollowing(me, targetUser) ?: null
+
+        if(follow != null && follow.state == true){
+            return true
+        }
+        return false
     }
 
 }
