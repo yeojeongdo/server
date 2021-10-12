@@ -25,16 +25,39 @@ class UserQuery  @Autowired constructor(
             .where(
                 follow.following.idx.eq(userIdx),
                 follow.state.eq(true),
-                lessThanId(lastId)
+                lessThanIdForGetFollower(lastId)
             )
             .limit(10)
             .orderBy(follow.follower.idx.desc())
             .fetch()
     }
 
-    fun lessThanId(lastId: Long): BooleanExpression?{
+    fun getUserFollowing(userIdx:Long, lastId:Long): List<User>{
+        return queryFactory
+            .select(follow.following)
+            .from(follow)
+            .join(follow.following, user)
+            .where(
+                follow.follower.idx.eq(userIdx),
+                follow.state.eq(true),
+                lessThanIdForGetFollowing(lastId)
+            )
+            .limit(10)
+            .orderBy(follow.following.idx.desc())
+            .fetch()
+    }
+
+    fun lessThanIdForGetFollower(lastId: Long): BooleanExpression?{
         return if(lastId != null){
             follow.follower.idx.lt(lastId)
+        }else{
+            null
+        }
+    }
+
+    fun lessThanIdForGetFollowing(lastId: Long): BooleanExpression?{
+        return if(lastId != null){
+            follow.following.idx.lt(lastId)
         }else{
             null
         }

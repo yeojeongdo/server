@@ -70,9 +70,16 @@ class UserController @Autowired constructor(
     @AutoLogging
     @GetMapping("/followers/{userIdx}")
     @ApiOperation("팔로워 받아오기")
-    fun getFollowerList(@PathVariable @Valid @NotNull userIdx: Long, @RequestParam lastId: Long, request: HttpServletRequest): ResponseData<List<UserInfoRo>>{
-        val userId = request.getAttribute("userId") as String
+    fun getFollowerList(@PathVariable @Valid @NotNull userIdx: Long, @RequestParam lastId: Long): ResponseData<List<UserInfoRo>>{
         val userList = userService.getFollowers(userIdx, lastId)
+        return ResponseData(HttpStatus.OK,"성공", userList)
+    }
+
+    @AutoLogging
+    @GetMapping("/followings/{userIdx}")
+    @ApiOperation("팔로 받아오기")
+    fun getFollowingList(@PathVariable @Valid @NotNull userIdx: Long, @RequestParam lastId: Long): ResponseData<List<UserInfoRo>>{
+        val userList = userService.getFollowing(userIdx, lastId)
         return ResponseData(HttpStatus.OK,"성공", userList)
     }
 }

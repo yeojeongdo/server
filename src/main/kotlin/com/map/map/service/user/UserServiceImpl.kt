@@ -130,6 +130,19 @@ class UserServiceImpl @Autowired constructor(
         return userInfoList.toList()
     }
 
+    override fun getFollowing(userIdx: Long, lastId: Long): List<UserInfoRo> {
+        val users = userQuery.getUserFollowing(userIdx, lastId)
+
+        val userInfoList: MutableList<UserInfoRo> = mutableListOf()
+        for(user:User in users){
+            val userInfo = UserInfoRo()
+            userToUserInfoRo(user, userInfo)
+            userInfoList.add(userInfo)
+        }
+
+        return userInfoList.toList()
+    }
+
     /**
      * 유저 데이터 업데이트
      */
