@@ -12,6 +12,18 @@ class AlbumLike {
     @JoinColumn
     var user: User? = null
 
+    @ManyToOne
+    @JoinColumn
+    var album: Album? = null
+
     @Column(nullable = false)
     var isState: Boolean? = false
+
+    constructor()
+
+    constructor(user: User?, album: Album?, isState: Boolean?) {
+        this.user = user
+        this.album = album
+        this.isState = isState
+    }
 }
