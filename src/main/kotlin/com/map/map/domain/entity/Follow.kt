@@ -3,7 +3,7 @@ package com.map.map.domain.entity
 import javax.persistence.*
 
 @Entity
-
+@Table(indexes = [Index(columnList = "follower_idx"), Index(columnList = "following_idx")])
 class Follow {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
