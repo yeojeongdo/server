@@ -4,7 +4,6 @@ import com.map.map.annotation.AutoLogging
 import com.map.map.domain.dto.user.DeleteUserDto
 import com.map.map.domain.dto.user.PatchUserBirthDateDto
 import com.map.map.domain.dto.user.PatchUserNameDto
-import com.map.map.domain.entity.User
 import com.map.map.domain.response.Response
 import com.map.map.domain.response.ResponseData
 import com.map.map.domain.response.user.UserInfoRo
@@ -61,9 +60,11 @@ class UserController @Autowired constructor(
     @AutoLogging
     @PatchMapping("image")
     @ApiOperation("프로필 사진 변경")
-    fun patchUserImage(@RequestParam file : MultipartFile, request : HttpServletRequest){
+    fun patchUserImage(@RequestParam file : MultipartFile, request : HttpServletRequest): Response {
         val userId = request.getAttribute("userId") as String
-
-
+        userService.changeUserImage(file, userId)
+        return Response(HttpStatus.OK, "성공")
     }
+
+
 }
