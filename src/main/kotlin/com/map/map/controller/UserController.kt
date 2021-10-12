@@ -61,9 +61,9 @@ class UserController @Autowired constructor(
     @AutoLogging
     @PatchMapping("image")
     @ApiOperation("프로필 사진 변경")
-    fun patchUserImage(@RequestParam file : MultipartFile, request : HttpServletRequest){
+    fun patchUserImage(@RequestParam file : MultipartFile, request : HttpServletRequest): Response {
         val userId = request.getAttribute("userId") as String
-
-
+        userService.changeUserImage(file, userId)
+        return Response(HttpStatus.OK, "성공")
     }
 }
