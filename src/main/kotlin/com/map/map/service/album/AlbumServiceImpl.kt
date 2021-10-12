@@ -77,6 +77,23 @@ class AlbumServiceImpl @Autowired constructor(
         return albumListRoToList(albumList)
     }
 
+    @Transactional(readOnly = true)
+    override fun getUserAlbumList(userIdx: Long, lastAlbumId: Long?): List<AlbumListRo> {
+        val user = userService.getUser(userIdx)
+        return getUsersAlbumListLatest(user, lastAlbumId)
+    }
+
+    override fun getUsersAlbumListLatest(user: User, id: Long?): List<AlbumListRo> {
+        var albumList : MutableList<Album>? = null
+        if(id == null){
+            albumList = albumRepo.findTop10ByUserOrderByIdxDesc(user)
+        }else{
+            albumList = albumRepo.findTop10ByUserAndIdxLessThanOrderByIdxDesc(user, id)
+        }
+
+        return albumListRoToList(albumList)
+    }
+
     /**
      * 엘범 상세 정보
      */
@@ -95,4 +112,6 @@ class AlbumServiceImpl @Autowired constructor(
         return albumRepo.findByIdx(id) ?: throw CustomHttpException(HttpStatus.NOT_FOUND, "앨범을 찾을 수 없음")
 
     }
+
+
 }
