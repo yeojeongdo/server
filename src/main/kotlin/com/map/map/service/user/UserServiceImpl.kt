@@ -7,9 +7,11 @@ import com.map.map.domain.entity.User
 import com.map.map.domain.entity.backup.UserBackUp
 import com.map.map.domain.entity.backup.repo.UserBackUpRepo
 import com.map.map.domain.repository.UserRepo
+import com.map.map.domain.response.album.AlbumListRo
 import com.map.map.domain.response.user.UserInfoRo
 import com.map.map.exception.CustomHttpException
 import com.map.map.lib.Crypto
+import com.map.map.service.album.AlbumService
 import com.map.map.service.auth.userToUserBackUp
 import com.map.map.service.file.FileService
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,7 +27,8 @@ class UserServiceImpl @Autowired constructor(
     private var userRepo: UserRepo,
     private var userBackUpRepo : UserBackUpRepo,
     private var crypto: Crypto,
-    private var fileService: FileService
+    private var fileService: FileService,
+
 ) : UserService {
     @Value("\${this.server.address}")
     private val serverAddress : String? = null
@@ -106,6 +109,10 @@ class UserServiceImpl @Autowired constructor(
 
     override fun getUser(userId: String): User{
         return userRepo.findById(userId) ?: throw CustomHttpException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
+    }
+
+    override fun getUser(userIdx: Long): User{
+        return userRepo.findByIdx(userIdx) ?: throw CustomHttpException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
     }
 
     /**
