@@ -3,6 +3,7 @@ package com.map.map.domain.entity
 import javax.persistence.*
 
 @Entity
+@Table(indexes = [Index(columnList = "idx"), Index(columnList = "album_idx")])
 class Comment {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var idx: Long? = null
