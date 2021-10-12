@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
+import javax.validation.constraints.NotNull
 
 @RestController
 @RequestMapping("user")
@@ -66,5 +67,12 @@ class UserController @Autowired constructor(
         return Response(HttpStatus.OK, "성공")
     }
 
-
+    @AutoLogging
+    @GetMapping("/followers/{userIdx}")
+    @ApiOperation("팔로워 받아오기")
+    fun getFollowerList(@PathVariable @Valid @NotNull userIdx: Long, @RequestParam lastId: Long, request: HttpServletRequest): ResponseData<List<UserInfoRo>>{
+        val userId = request.getAttribute("userId") as String
+        val userList = userService.getFollowers(userIdx, lastId)
+        return ResponseData(HttpStatus.OK,"성공", userList)
+    }
 }

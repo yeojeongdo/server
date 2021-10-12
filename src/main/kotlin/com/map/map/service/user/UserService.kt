@@ -18,4 +18,5 @@ interface UserService {
     fun changeUserImage(file: MultipartFile, userId: String)
     fun getUser(userId : String) : User
     fun getUser(userIdx : Long) : User
+    fun getFollowers(userIdx: Long, lastId:Long) : List<UserInfoRo>
 }
