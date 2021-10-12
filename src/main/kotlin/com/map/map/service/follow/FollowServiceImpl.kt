@@ -1,5 +1,6 @@
 package com.map.map.service.follow
 
+import com.map.map.domain.dto.follow.FollowNumbersDto
 import com.map.map.domain.entity.Follow
 import com.map.map.domain.repository.FollowRepo
 import com.map.map.service.user.UserService
@@ -23,4 +24,17 @@ class FollowServiceImpl @Autowired constructor(
 
         followRepo.save(follow)
     }
+
+    @Transactional(readOnly = true)
+    override fun getFollowNum(userIdx: Long) : FollowNumbersDto {
+        val user = userService.getUser(userIdx)
+        val follower = followRepo.countByFollowingAndState(user)
+        val following = followRepo.countByFollowerAndState(user)
+
+        val followNumbersDto = FollowNumbersDto();
+        followerNumAndFollowingNumToFollowNumDto(follower, following, followNumbersDto)
+
+        return followNumbersDto
+    }
+
 }
