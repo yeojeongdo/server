@@ -56,8 +56,7 @@ class CommentServiceImpl @Autowired constructor(
 
     @Transactional(readOnly = true)
     override fun getCommentAllList(albumId: Long): MutableList<CommentRo> {
-        albumService.findAlbum(albumId)
-        val comments = commentRepo.findAll()
+        val comments = commentRepo.findAllByAlbumIdx(albumId)
 
         val commentRoList = mutableListOf<CommentRo>()
         for (comment in comments) {
