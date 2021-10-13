@@ -6,6 +6,7 @@ import com.map.map.domain.entity.User
 import com.map.map.domain.repository.AlbumRepo
 import com.map.map.domain.repository.LikeRepo
 import com.map.map.domain.repository.UserRepo
+import com.map.map.domain.response.like.LikedUsersRo
 import com.map.map.exception.CustomHttpException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -33,6 +34,35 @@ class LikeServiceImpl @Autowired constructor(
         album.likes.add(albumLike)
 
         likeRepo.save(albumLike)
+    }
+
+    /**
+     * 좋아요 상태 확인
+     */
+    @Transactional(readOnly = true)
+    override fun isLike(userId: String, albumId: Long): Boolean {
+        val user = findUserById(userId)
+        val albumLike = likeRepo.findAlbumLikeByAlbumAndUser(albumId, user.idx!!)
+            .orElse(AlbumLike(user, findAlbum(albumId), false))
+
+        return albumLike.isState!!
+    }
+
+    /**
+     * 좋아요 한 유저들 보기
+     */
+    @Transactional(readOnly = true)
+    override fun getLikedUsers(albumId: Long): MutableList<LikedUsersRo> {
+        val album = findAlbum(albumId)
+
+        val likedUserRoList = mutableListOf<LikedUsersRo>()
+        for (like in album.likes) {
+            val likedUsersRo = LikedUsersRo()
+            userToSimpleUserInfoRo(album.user!!, likedUsersRo)
+            likedUserRoList.add(likedUsersRo)
+        }
+
+        return likedUserRoList
     }
 
     override fun findUserById(userId: String): User {
