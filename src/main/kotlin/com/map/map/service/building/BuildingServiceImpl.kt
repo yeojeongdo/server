@@ -1,15 +1,19 @@
 package com.map.map.service.building
 
 import com.map.map.domain.dto.album.PostAlbumDto
+import com.map.map.domain.dto.building.GetBuildingUserListDto
 import com.map.map.domain.dto.building.GetBuildingsAlbumListDto
 import com.map.map.domain.entity.Album
 import com.map.map.domain.entity.Building
+import com.map.map.domain.entity.User
 import com.map.map.domain.repository.BuildingRepo
 import com.map.map.domain.repository.querydsl.BuildingQuery
 import com.map.map.domain.response.album.AlbumListRo
+import com.map.map.domain.response.user.UserInfoRo
 import com.map.map.exception.CustomHttpException
 import com.map.map.service.album.albumToAlbumListRo
 import com.map.map.service.user.UserService
+import com.map.map.service.user.userToUserInfoRo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -34,8 +38,7 @@ class BuildingServiceImpl @Autowired constructor(
     }
 
     override fun getAlbum(getBuildingsAlbumListDto: GetBuildingsAlbumListDto): List<AlbumListRo> {
-        buildingRepo.findByAddress(getBuildingsAlbumListDto.address!!)
-            ?: throw CustomHttpException(HttpStatus.NOT_FOUND,"건물을 찾을 수 없습니다.")
+        checkBuildingExist(getBuildingsAlbumListDto.address!!)
 
         val albums = buildingQuery.getAlbums(getBuildingsAlbumListDto.address!!, getBuildingsAlbumListDto.lastAlbumId)
 
@@ -48,4 +51,25 @@ class BuildingServiceImpl @Autowired constructor(
 
         return albumList
     }
+
+    override fun getUser(getBuildingUserListDto: GetBuildingUserListDto): List<UserInfoRo> {
+        checkBuildingExist(getBuildingUserListDto.address!!)
+
+        val users = buildingQuery.getUsers(getBuildingUserListDto.address!!, getBuildingUserListDto.lastUserId)
+
+        val userList : MutableList<UserInfoRo> = mutableListOf()
+        for(user: User in users){
+            val userInfoRo = UserInfoRo();
+            userToUserInfoRo(user, userInfoRo)
+            userList.add(userInfoRo)
+        }
+
+        return userList
+    }
+
+    private fun checkBuildingExist(address:String) : Building {
+        return buildingRepo.findByAddress(address)
+            ?: throw CustomHttpException(HttpStatus.NOT_FOUND,"건물을 찾을 수 없습니다.")
+    }
+
 }
