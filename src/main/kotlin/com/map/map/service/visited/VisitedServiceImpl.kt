@@ -17,8 +17,11 @@ class VisitedServiceImpl @Autowired constructor(
      * 방문 세팅
      */
     override fun setVisited(building: Building, user: User): Visited {
-        val visited = Visited()
-        userAndBuildingToVisited(building, user, visited)
+        var visited = visitedRepo.findByBuildingAndUser(building, user);
+        if(visited == null) {
+            visited = Visited()
+            userAndBuildingToVisited(building, user, visited)
+        }
 
         return visited
     }
