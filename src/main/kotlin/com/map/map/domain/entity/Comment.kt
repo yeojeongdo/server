@@ -12,6 +12,10 @@ class Comment {
     @JoinColumn(name = "user_idx", nullable = false)
     var user: User? = null
 
+    @ManyToOne
+    @JoinColumn(name = "album_idx", nullable = false)
+    var album: Album? = null
+
     @Column(nullable = false)
     var content: String? = null
 }

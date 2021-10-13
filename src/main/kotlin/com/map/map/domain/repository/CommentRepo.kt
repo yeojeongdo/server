@@ -12,4 +12,5 @@ interface CommentRepo : JpaRepository<Comment, Long> {
 
     fun deleteByIdxAndUser(idx:Long, user: User)
     fun findByIdxAndUser(idx:Long, user: User):Comment?
+    fun findAllByAlbumIdx(albumIdx: Long): MutableList<Comment>
 }
