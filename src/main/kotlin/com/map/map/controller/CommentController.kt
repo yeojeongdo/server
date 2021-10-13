@@ -36,6 +36,14 @@ class CommentController @Autowired constructor(
     }
 
     @AutoLogging
+    @GetMapping("/all/list/{albumId}")
+    @ApiOperation("모든 댓글 리스트 받아오기")
+    fun getAllCommentList(@PathVariable albumId: Long): ResponseData<MutableList<CommentRo>> {
+        val data = commentService.getCommentAllList(albumId)
+        return ResponseData(HttpStatus.OK, "성공", data)
+    }
+
+    @AutoLogging
     @DeleteMapping("/{commentId}")
     @ApiOperation("댓글 삭제")
     fun deleteComment(@PathVariable commentId:Long, request: HttpServletRequest): Response {

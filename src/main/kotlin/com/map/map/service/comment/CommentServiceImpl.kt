@@ -54,6 +54,21 @@ class CommentServiceImpl @Autowired constructor(
         return commentRoList
     }
 
+    @Transactional(readOnly = true)
+    override fun getCommentAllList(albumId: Long): MutableList<CommentRo> {
+        albumService.findAlbum(albumId)
+        val comments = commentRepo.findAll()
+
+        val commentRoList = mutableListOf<CommentRo>()
+        for (comment in comments) {
+            val commentRo = CommentRo()
+            commentToCommentRo(comment, commentRo)
+            commentRoList.add(commentRo)
+        }
+
+        return commentRoList
+    }
+
     @Transactional
     override fun deleteComment(commentId: Long, userId: String) {
         val user = userService.getUser(userId)
