@@ -45,17 +45,16 @@ class AlbumServiceImpl @Autowired constructor(
             var user = userService.getUser(userId)
 
             var building = buildingService.setBuilding(postAlbumDto)
+            buildingRepo.save(building)
 
             val visited = visitedService.setVisited(building, user)
+            visitedRepo.save(visited)
 
             val photoList : MutableList<Photo> = photoService.saveFiles(postAlbumDto.files)
 
             val album = Album()
             setAlbum(album, postAlbumDto, user, building, photoList)
 
-
-            buildingRepo.save(building)
-            visitedRepo.save(visited)
             albumRepo.save(album)
         }catch (e: Exception){
             throw e;
