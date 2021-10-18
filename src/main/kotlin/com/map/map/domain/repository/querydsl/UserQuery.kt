@@ -17,7 +17,7 @@ class UserQuery  @Autowired constructor(
     private var em : EntityManager,
     private var queryFactory: JPAQueryFactory
 ){
-    fun getUserFollower(userIdx:Long, lastId:Long): List<User>{
+    fun getUserFollower(userIdx:Long, lastId:Long?): List<User>{
         return queryFactory
             .select(follow.follower)
             .from(follow)
@@ -32,7 +32,16 @@ class UserQuery  @Autowired constructor(
             .fetch()
     }
 
-    fun getUserFollowing(userIdx:Long, lastId:Long): List<User>{
+    fun getUserAllFollower(userIdx: Long): List<User> {
+        return queryFactory
+            .select(follow.follower)
+            .from(follow)
+            .join(follow.follower, user)
+            .orderBy(follow.follower.idx.desc())
+            .fetch()
+    }
+
+    fun getUserFollowing(userIdx:Long, lastId:Long?): List<User>{
         return queryFactory
             .select(follow.following)
             .from(follow)
@@ -47,7 +56,7 @@ class UserQuery  @Autowired constructor(
             .fetch()
     }
 
-    fun lessThanIdForGetFollower(lastId: Long): BooleanExpression?{
+    fun lessThanIdForGetFollower(lastId: Long?): BooleanExpression?{
         return if(lastId != null){
             follow.follower.idx.lt(lastId)
         }else{
@@ -55,7 +64,7 @@ class UserQuery  @Autowired constructor(
         }
     }
 
-    fun lessThanIdForGetFollowing(lastId: Long): BooleanExpression?{
+    fun lessThanIdForGetFollowing(lastId: Long?): BooleanExpression?{
         return if(lastId != null){
             follow.following.idx.lt(lastId)
         }else{

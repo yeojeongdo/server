@@ -52,9 +52,9 @@ class UserController @Autowired constructor(
     @AutoLogging
     @GetMapping
     @ApiOperation("유저 정보 확인")
-    fun getUserInfo(@RequestParam Idx:Long?, request: HttpServletRequest): ResponseData<UserInfoRo> {
+    fun getUserInfo(@RequestParam idx:Long?, request: HttpServletRequest): ResponseData<UserInfoRo> {
         val userId = request.getAttribute("userId") as String
-        val data = userService.getUserInfo(Idx, userId)
+        val data = userService.getUserInfo(idx, userId)
         return ResponseData(HttpStatus.OK, "성공", data)
     }
 
@@ -70,15 +70,23 @@ class UserController @Autowired constructor(
     @AutoLogging
     @GetMapping("/followers/{userIdx}")
     @ApiOperation("팔로워 받아오기")
-    fun getFollowerList(@PathVariable @Valid @NotNull userIdx: Long, @RequestParam lastId: Long): ResponseData<List<UserInfoRo>>{
+    fun getFollowerList(@PathVariable @Valid @NotNull userIdx: Long, @RequestParam lastId: Long?): ResponseData<List<UserInfoRo>>{
         val userList = userService.getFollowers(userIdx, lastId)
         return ResponseData(HttpStatus.OK,"성공", userList)
     }
 
     @AutoLogging
+    @GetMapping("/all/followers/{userIdx}")
+    @ApiOperation("모든 팔로워 받아오기")
+    fun getAllFollowerList(@PathVariable @Valid @NotNull userIdx: Long): ResponseData<List<UserInfoRo>> {
+        val userList = userService.getAllFollowers(userIdx);
+        return ResponseData(HttpStatus.OK, "성공", userList)
+    }
+
+    @AutoLogging
     @GetMapping("/followings/{userIdx}")
     @ApiOperation("팔로 받아오기")
-    fun getFollowingList(@PathVariable @Valid @NotNull userIdx: Long, @RequestParam lastId: Long): ResponseData<List<UserInfoRo>>{
+    fun getFollowingList(@PathVariable @Valid @NotNull userIdx: Long, @RequestParam lastId: Long?): ResponseData<List<UserInfoRo>>{
         val userList = userService.getFollowing(userIdx, lastId)
         return ResponseData(HttpStatus.OK,"성공", userList)
     }

@@ -123,7 +123,7 @@ class UserServiceImpl @Autowired constructor(
         return userRepo.findByIdx(userIdx) ?: throw CustomHttpException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
     }
 
-    override fun getFollowers(userIdx: Long, lastId: Long): List<UserInfoRo> {
+    override fun getFollowers(userIdx: Long, lastId: Long?): List<UserInfoRo> {
         val users = userQuery.getUserFollower(userIdx, lastId)
 
         val userInfoList: MutableList<UserInfoRo> = mutableListOf()
@@ -136,8 +136,21 @@ class UserServiceImpl @Autowired constructor(
         return userInfoList.toList()
     }
 
-    override fun getFollowing(userIdx: Long, lastId: Long): List<UserInfoRo> {
+    override fun getFollowing(userIdx: Long, lastId: Long?): List<UserInfoRo> {
         val users = userQuery.getUserFollowing(userIdx, lastId)
+
+        val userInfoList: MutableList<UserInfoRo> = mutableListOf()
+        for(user:User in users){
+            val userInfo = UserInfoRo()
+            userToUserInfoRo(user, userInfo)
+            userInfoList.add(userInfo)
+        }
+
+        return userInfoList.toList()
+    }
+
+    override fun getAllFollowers(userIdx: Long): List<UserInfoRo> {
+        val users = userQuery.getUserAllFollower(userIdx)
 
         val userInfoList: MutableList<UserInfoRo> = mutableListOf()
         for(user:User in users){
