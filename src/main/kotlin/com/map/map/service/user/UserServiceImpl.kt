@@ -90,8 +90,14 @@ class UserServiceImpl @Autowired constructor(
      * 유저 정보 받아오기
      */
     @Transactional(readOnly = true)
-    override fun getUserInfo(userId: String): UserInfoRo {
-        val user = getUser(userId)
+    override fun getUserInfo(userIdx: Long?, userId: String): UserInfoRo {
+
+        val user = if (userIdx == null) {
+            getUser(userId)
+        } else {
+            getUser(userIdx)
+        }
+
         val response = UserInfoRo()
         userToUserInfoRo(user, response)
 

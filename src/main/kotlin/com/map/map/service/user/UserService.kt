@@ -14,7 +14,7 @@ interface UserService {
     fun changeUserBirthDate(patchUserBirthDateDto: PatchUserBirthDateDto, userId: String)
     fun deleteUser(deleteUserDto: DeleteUserDto, userId: String)
     @Transactional(readOnly = true)
-    fun getUserInfo(userId: String): UserInfoRo
+    fun getUserInfo(userIdx:Long?, userId: String): UserInfoRo
     fun changeUserImage(file: MultipartFile, userId: String)
     fun getUser(userId : String) : User
     fun getUser(userIdx : Long) : User
