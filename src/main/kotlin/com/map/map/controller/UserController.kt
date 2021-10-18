@@ -52,9 +52,9 @@ class UserController @Autowired constructor(
     @AutoLogging
     @GetMapping
     @ApiOperation("유저 정보 확인")
-    fun getUserInfo(request: HttpServletRequest): ResponseData<UserInfoRo> {
+    fun getUserInfo(@RequestParam Idx:Long?, request: HttpServletRequest): ResponseData<UserInfoRo> {
         val userId = request.getAttribute("userId") as String
-        val data = userService.getUserInfo(userId)
+        val data = userService.getUserInfo(Idx, userId)
         return ResponseData(HttpStatus.OK, "성공", data)
     }
 
@@ -82,4 +82,5 @@ class UserController @Autowired constructor(
         val userList = userService.getFollowing(userIdx, lastId)
         return ResponseData(HttpStatus.OK,"성공", userList)
     }
+
 }

@@ -1,5 +1,6 @@
 package com.map.map.domain.repository.querydsl
 
+import com.map.map.domain.dto.building.SearchBuildingDto
 import com.map.map.domain.entity.*
 import com.map.map.domain.entity.QAlbum.album
 import com.map.map.domain.entity.QBuilding.building
@@ -57,6 +58,24 @@ class BuildingQuery @Autowired constructor(
     fun lessThanUserId(lastUserId: Long?): BooleanExpression?{
         return if(lastUserId != null){
             user.idx.lt(lastUserId)
+        }else{
+            null
+        }
+    }
+
+    fun searchBuilding(searchBuildingDto: SearchBuildingDto) : List<Building>{
+        return queryFactory
+            .select(building)
+            .from(building)
+            .where(building.address.like(searchBuildingDto.value),
+                lessThanBuildingId(searchBuildingDto.lastBuildingId))
+            .orderBy(building.id.desc())
+            .limit(10)
+            .fetch()
+    }
+    fun lessThanBuildingId(lastBuildingId: Long?): BooleanExpression?{
+        return if(lastBuildingId != null){
+            building.id.lt(lastBuildingId)
         }else{
             null
         }
