@@ -18,6 +18,7 @@ interface UserService {
     fun changeUserImage(file: MultipartFile, userId: String)
     fun getUser(userId : String) : User
     fun getUser(userIdx : Long) : User
-    fun getFollowers(userIdx: Long, lastId:Long) : List<UserInfoRo>
-    fun getFollowing(userIdx: Long, lastId:Long) : List<UserInfoRo>
+    fun getFollowers(userIdx: Long, lastId:Long?) : List<UserInfoRo>
+    fun getFollowing(userIdx: Long, lastId:Long?) : List<UserInfoRo>
+    fun getAllFollowers(userIdx: Long): List<UserInfoRo>
 }
