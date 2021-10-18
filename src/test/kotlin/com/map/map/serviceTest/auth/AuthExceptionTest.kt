@@ -3,6 +3,7 @@ package com.map.map.serviceTest.auth
 import com.map.map.domain.dto.auth.LoginDto
 import com.map.map.domain.dto.auth.RegisterDto
 import com.map.map.enum.Gender
+import com.map.map.exception.CustomHttpException
 import com.map.map.service.auth.AuthServiceImpl
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,9 +33,9 @@ class AuthExceptionTest {
 
             authServiceImpl.register(registerDto)
             authServiceImpl.register(registerDto)
-        }catch (e: HttpClientErrorException){
+        }catch (e: CustomHttpException){
             e.printStackTrace()
-            assert(e.statusCode == HttpStatus.FORBIDDEN)
+            assert(e.status == HttpStatus.FORBIDDEN)
         }
     }
 
@@ -53,9 +54,9 @@ class AuthExceptionTest {
 
             var id = "aa"
             authServiceImpl.checkId(id)
-        }catch (e: HttpClientErrorException){
+        }catch (e: CustomHttpException){
             e.printStackTrace()
-            assert(e.statusCode == HttpStatus.NOT_FOUND)
+            assert(e.status == HttpStatus.NOT_FOUND)
         }
     }
 
@@ -76,10 +77,10 @@ class AuthExceptionTest {
             loginDto.id = "qe"
             loginDto.password = "qwewqewqe"
             authServiceImpl.login(loginDto)
-        }catch (e: HttpClientErrorException){
+        }catch (e: CustomHttpException){
             e.printStackTrace()
-            if(e.statusCode == HttpStatus.NOT_FOUND){
-                assert(e.statusCode == HttpStatus.NOT_FOUND)
+            if(e.status == HttpStatus.NOT_FOUND){
+                assert(e.status == HttpStatus.NOT_FOUND)
             }else{
                 throw e
             }
@@ -103,10 +104,10 @@ class AuthExceptionTest {
             loginDto.id = "qwe"
             loginDto.password = "qwewqewqe"
             authServiceImpl.login(loginDto)
-        }catch (e: HttpClientErrorException){
+        }catch (e: CustomHttpException){
             e.printStackTrace()
-            if(e.statusCode == HttpStatus.BAD_REQUEST){
-                assert(e.statusCode == HttpStatus.BAD_REQUEST)
+            if(e.status == HttpStatus.BAD_REQUEST){
+                assert(e.status == HttpStatus.BAD_REQUEST)
             }else{
                 throw e
             }
