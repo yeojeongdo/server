@@ -3,12 +3,14 @@ package com.map.map.service.building
 import com.map.map.domain.dto.album.PostAlbumDto
 import com.map.map.domain.dto.building.GetBuildingUserListDto
 import com.map.map.domain.dto.building.GetBuildingsAlbumListDto
+import com.map.map.domain.dto.building.SearchBuildingDto
 import com.map.map.domain.entity.Album
 import com.map.map.domain.entity.Building
 import com.map.map.domain.entity.User
 import com.map.map.domain.repository.BuildingRepo
 import com.map.map.domain.repository.querydsl.BuildingQuery
 import com.map.map.domain.response.album.AlbumListRo
+import com.map.map.domain.response.building.BuildingInfoRo
 import com.map.map.domain.response.user.UserInfoRo
 import com.map.map.exception.CustomHttpException
 import com.map.map.service.album.albumToAlbumListRo
@@ -65,6 +67,20 @@ class BuildingServiceImpl @Autowired constructor(
         }
 
         return userList
+    }
+
+    override fun searchBuilding(searchBuildingDto: SearchBuildingDto): List<BuildingInfoRo> {
+        searchBuildingDto.value = "%"+searchBuildingDto.value+"%"
+        val buildings = buildingQuery.searchBuilding(searchBuildingDto)
+
+        val buildingList : MutableList<BuildingInfoRo> = mutableListOf()
+        for(building: Building in buildings){
+            val buildingInfoRo = BuildingInfoRo();
+            buildingToBuildingInfo(building, buildingInfoRo)
+            buildingList.add(buildingInfoRo)
+        }
+
+        return buildingList
     }
 
     private fun checkBuildingExist(address:String) : Building {
