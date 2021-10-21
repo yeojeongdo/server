@@ -19,7 +19,7 @@ class LikeQuery @Autowired constructor(
             .select(albumLike)
             .from(album)
             .join(album.likes, albumLike)
-            .where(album.idx.eq(albumId))
+            .where(album.idx.eq(albumId).and(albumLike.isState.eq(true)))
             .fetchCount();
     }
 }

@@ -28,21 +28,25 @@ class LikeServiceImpl @Autowired constructor(
     override fun changeLikeAlbumState(userId: String, albumId: Long) {
         val user = findUserById(userId)
         val album = findAlbum(albumId)
-        val albumLike = likeRepo.findAlbumLikeByAlbumAndUser(albumId, user.idx!!).orElse(AlbumLike(user, album, false))
+        val albumLike = likeRepo.findAlbumLikeByAlbumAndUser(album, user).orElseGet {
+            val albumLike = AlbumLike(user, album, false)
+            album.likes.add(albumLike)
+            albumLike
+        }
 
         albumLike.isState = !albumLike.isState!!
-        album.likes.add(albumLike)
+
 
         likeRepo.save(albumLike)
     }
-
     /**
      * 좋아요 상태 확인
      */
     @Transactional(readOnly = true)
     override fun isLike(userId: String, albumId: Long): Boolean {
         val user = findUserById(userId)
-        val albumLike = likeRepo.findAlbumLikeByAlbumAndUser(albumId, user.idx!!)
+        val album = findAlbum(albumId)
+        val albumLike = likeRepo.findAlbumLikeByAlbumAndUser(album, user)
             .orElse(AlbumLike(user, findAlbum(albumId), false))
 
         return albumLike.isState!!
@@ -57,9 +61,11 @@ class LikeServiceImpl @Autowired constructor(
 
         val likedUserRoList = mutableListOf<LikedUsersRo>()
         for (like in album.likes) {
-            val likedUsersRo = LikedUsersRo()
-            userToSimpleUserInfoRo(album.user!!, likedUsersRo)
-            likedUserRoList.add(likedUsersRo)
+            if(like.isState == true) {
+                val likedUsersRo = LikedUsersRo()
+                userToSimpleUserInfoRo(like.user!!, likedUsersRo)
+                likedUserRoList.add(likedUsersRo)
+            }
         }
 
         return likedUserRoList
