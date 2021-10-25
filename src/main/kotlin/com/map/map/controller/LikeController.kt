@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 
 @RestController
-@RequestMapping("/like")
+@RequestMapping("like")
 class LikeController @Autowired constructor(
     private val likeService: LikeService,
 ) {

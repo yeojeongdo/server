@@ -39,6 +39,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/user","/user/**").permitAll()
                 .antMatchers("/album","album/**").permitAll()
+                .antMatchers("/like", "/like/**").permitAll()
 
     }
     @Bean
