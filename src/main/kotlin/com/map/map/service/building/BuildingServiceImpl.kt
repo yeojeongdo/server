@@ -19,6 +19,7 @@ import com.map.map.service.user.userToUserInfoRo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import kotlin.streams.toList
 
 @Service
 class BuildingServiceImpl @Autowired constructor(
@@ -44,14 +45,18 @@ class BuildingServiceImpl @Autowired constructor(
 
         val albums = buildingQuery.getAlbums(getBuildingsAlbumListDto.address!!, getBuildingsAlbumListDto.lastAlbumId)
 
-        val albumList : MutableList<AlbumListRo> = mutableListOf()
-        for(album:Album in albums){
+        return albums.stream().map {
             val albumListRo = AlbumListRo()
-            albumToAlbumListRo(albumListRo, album)
-            albumList.add(albumListRo)
-        }
-
-        return albumList
+            albumToAlbumListRo(albumListRo, it)
+            albumListRo
+        }.toList()
+//        for(album:Album in albums){
+//            val albumListRo = AlbumListRo()
+//            albumToAlbumListRo(albumListRo, album)
+//            albumList.add(albumListRo)
+//        }
+//
+//        return albumList
     }
 
     override fun getUser(getBuildingUserListDto: GetBuildingUserListDto): List<UserInfoRo> {
@@ -59,28 +64,22 @@ class BuildingServiceImpl @Autowired constructor(
 
         val users = buildingQuery.getUsers(getBuildingUserListDto.address!!, getBuildingUserListDto.lastUserId)
 
-        val userList : MutableList<UserInfoRo> = mutableListOf()
-        for(user: User in users){
+        return users.stream().map {
             val userInfoRo = UserInfoRo();
-            userToUserInfoRo(user, userInfoRo)
-            userList.add(userInfoRo)
-        }
-
-        return userList
+            userToUserInfoRo(it, userInfoRo)
+            userInfoRo
+        }.toList()
     }
 
     override fun searchBuilding(searchBuildingDto: SearchBuildingDto): List<BuildingInfoRo> {
         searchBuildingDto.value = "%"+searchBuildingDto.value+"%"
         val buildings = buildingQuery.searchBuilding(searchBuildingDto)
 
-        val buildingList : MutableList<BuildingInfoRo> = mutableListOf()
-        for(building: Building in buildings){
+        return buildings.stream().map {
             val buildingInfoRo = BuildingInfoRo();
-            buildingToBuildingInfo(building, buildingInfoRo)
-            buildingList.add(buildingInfoRo)
-        }
-
-        return buildingList
+            buildingToBuildingInfo(it, buildingInfoRo)
+            buildingInfoRo
+        }.toList()
     }
 
     private fun checkBuildingExist(address:String) : Building {

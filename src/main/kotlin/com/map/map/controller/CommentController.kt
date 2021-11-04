@@ -30,7 +30,7 @@ class CommentController @Autowired constructor(
     @AutoLogging
     @GetMapping("/list/{albumId}")
     @ApiOperation("댓글리스트 받아오기")
-    fun getCommentList(@PathVariable albumId:Long, @RequestParam lastCommentId:Long?): ResponseData<MutableList<CommentRo>>{
+    fun getCommentList(@PathVariable albumId:Long, @RequestParam lastCommentId:Long?): ResponseData<List<CommentRo>>{
         val data = commentService.getCommentList(albumId, lastCommentId)
         return ResponseData(HttpStatus.OK, "성공", data)
     }
@@ -38,7 +38,7 @@ class CommentController @Autowired constructor(
     @AutoLogging
     @GetMapping("/all/list/{albumId}")
     @ApiOperation("모든 댓글 리스트 받아오기")
-    fun getAllCommentList(@PathVariable albumId: Long): ResponseData<MutableList<CommentRo>> {
+    fun getAllCommentList(@PathVariable albumId: Long): ResponseData<List<CommentRo>> {
         val data = commentService.getCommentAllList(albumId)
         return ResponseData(HttpStatus.OK, "성공", data)
     }

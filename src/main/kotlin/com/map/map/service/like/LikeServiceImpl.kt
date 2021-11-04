@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.streams.toList
 
 @Service
 class LikeServiceImpl @Autowired constructor(
@@ -56,19 +57,18 @@ class LikeServiceImpl @Autowired constructor(
      * 좋아요 한 유저들 보기
      */
     @Transactional(readOnly = true)
-    override fun getLikedUsers(albumId: Long): MutableList<LikedUsersRo> {
+    override fun getLikedUsers(albumId: Long): List<LikedUsersRo> {
         val album = findAlbum(albumId)
 
         val likedUserRoList = mutableListOf<LikedUsersRo>()
-        for (like in album.likes) {
-            if(like.isState == true) {
-                val likedUsersRo = LikedUsersRo()
-                userToSimpleUserInfoRo(like.user!!, likedUsersRo)
-                likedUserRoList.add(likedUsersRo)
-            }
-        }
+        return album.likes.stream().filter {
+            it.isState == true
+        }.map {
+            val likedUsersRo = LikedUsersRo()
+            userToSimpleUserInfoRo(it.user!!, likedUsersRo)
+            likedUsersRo
+        }.toList()
 
-        return likedUserRoList
     }
 
     override fun findUserById(userId: String): User {

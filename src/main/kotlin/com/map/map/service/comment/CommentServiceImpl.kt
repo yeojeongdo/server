@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.streams.toList
 
 @Service
 class CommentServiceImpl @Autowired constructor(
@@ -39,33 +40,26 @@ class CommentServiceImpl @Autowired constructor(
     }
 
     @Transactional(readOnly = true)
-    override fun getCommentList(albumId: Long, lastCommentId: Long?) : MutableList<CommentRo>{
+    override fun getCommentList(albumId: Long, lastCommentId: Long?) : List<CommentRo>{
         albumService.findAlbum(albumId)
         val comments = commentQuery.getCommentList(albumId, lastCommentId)
 
-
-        var commentRoList = mutableListOf<CommentRo>()
-        for (comment:Comment in comments){
+        return comments.stream().map {
             val commentRo = CommentRo()
-            commentToCommentRo(comment, commentRo)
-            commentRoList.add(commentRo)
-        }
-
-        return commentRoList
+            commentToCommentRo(it, commentRo)
+            commentRo
+        }.toList()
     }
 
     @Transactional(readOnly = true)
-    override fun getCommentAllList(albumId: Long): MutableList<CommentRo> {
+    override fun getCommentAllList(albumId: Long): List<CommentRo> {
         val comments = commentRepo.findAllByAlbumIdx(albumId)
 
-        val commentRoList = mutableListOf<CommentRo>()
-        for (comment in comments) {
+        return comments.stream().map {
             val commentRo = CommentRo()
-            commentToCommentRo(comment, commentRo)
-            commentRoList.add(commentRo)
-        }
-
-        return commentRoList
+            commentToCommentRo(it, commentRo)
+            commentRo
+        }.toList()
     }
 
     @Transactional
