@@ -12,5 +12,5 @@ interface LikeService {
     @Transactional(readOnly = true)
     fun isLike(userId: String, albumId: Long): Boolean
     @Transactional(readOnly = true)
-    fun getLikedUsers(albumId: Long): MutableList<LikedUsersRo>
+    fun getLikedUsers(albumId: Long): List<LikedUsersRo>
 }

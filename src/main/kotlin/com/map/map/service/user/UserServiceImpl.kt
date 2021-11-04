@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
+import kotlin.streams.toList
 
 @Service
 class UserServiceImpl @Autowired constructor(
@@ -34,7 +35,6 @@ class UserServiceImpl @Autowired constructor(
 ) : UserService {
     @Value("\${this.server.address}")
     private val serverAddress : String? = null
-
 
     /**
      * 유저 이름 변경
@@ -126,40 +126,19 @@ class UserServiceImpl @Autowired constructor(
     override fun getFollowers(userIdx: Long, lastId: Long?): List<UserInfoRo> {
         val users = userQuery.getUserFollower(userIdx, lastId)
 
-        val userInfoList: MutableList<UserInfoRo> = mutableListOf()
-        for(user:User in users){
-            val userInfo = UserInfoRo()
-            userToUserInfoRo(user, userInfo)
-            userInfoList.add(userInfo)
-        }
-
-        return userInfoList.toList()
+        return changeUserListToUserInfoList(users);
     }
 
     override fun getFollowing(userIdx: Long, lastId: Long?): List<UserInfoRo> {
         val users = userQuery.getUserFollowing(userIdx, lastId)
 
-        val userInfoList: MutableList<UserInfoRo> = mutableListOf()
-        for(user:User in users){
-            val userInfo = UserInfoRo()
-            userToUserInfoRo(user, userInfo)
-            userInfoList.add(userInfo)
-        }
-
-        return userInfoList.toList()
+        return changeUserListToUserInfoList(users);
     }
 
     override fun getAllFollowers(userIdx: Long): List<UserInfoRo> {
         val users = userQuery.getUserAllFollower(userIdx)
 
-        val userInfoList: MutableList<UserInfoRo> = mutableListOf()
-        for(user:User in users){
-            val userInfo = UserInfoRo()
-            userToUserInfoRo(user, userInfo)
-            userInfoList.add(userInfo)
-        }
-
-        return userInfoList.toList()
+        return changeUserListToUserInfoList(users);
     }
 
     /**

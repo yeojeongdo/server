@@ -41,7 +41,7 @@ class LikeController @Autowired constructor(
     @AutoLogging
     @GetMapping("/users")
     @ApiOperation("좋아요 누른 유저들")
-    fun getUsersLiked(@RequestParam albumId: Long): ResponseData<MutableList<LikedUsersRo>> {
+    fun getUsersLiked(@RequestParam albumId: Long): ResponseData<List<LikedUsersRo>> {
         val data = likeService.getLikedUsers(albumId)
 
         return ResponseData(HttpStatus.OK, "성공", data)
