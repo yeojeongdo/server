@@ -9,6 +9,7 @@ import com.map.map.domain.response.building.BuildingInfoRo
 import com.map.map.domain.response.user.UserInfoRo
 import com.map.map.service.building.buildingToBuildingInfo
 import com.map.map.service.user.userToUserInfoRo
+import kotlin.streams.toList
 
 
 fun userAndBuildingToVisited(building: Building, user: User, visited: Visited){
@@ -50,8 +51,8 @@ fun albumToAlbumDetail(album: Album, commentNum: Long, likeNum: Long, albumDetai
     albumDetailRo.commentNum = commentNum
     albumDetailRo.likeNum = likeNum
 
-    for (photo in album.photo){
-        albumDetailRo.photo.add(photo.filed!!)
+    album.photo.stream().forEach{
+        albumDetailRo.photo.add(it.filed!!)
     }
 
     albumDetailRo.user = UserInfoRo()
@@ -65,14 +66,9 @@ fun albumToAlbumDetail(album: Album, commentNum: Long, likeNum: Long, albumDetai
  * AlbumListRo 를 리스트로 만들어주기
  */
 fun albumListRoToList(albums: MutableList<Album>): List<AlbumListRo> {
-    var list = mutableListOf<AlbumListRo>()
-
-    for (album in albums) {
+    return albums.stream().map {
         var albumListRo = AlbumListRo()
-        albumToAlbumListRo(albumListRo, album)
-
-        list.add(albumListRo)
-    }
-
-    return list
+        albumToAlbumListRo(albumListRo, it)
+        albumListRo
+    }.toList()
 }
