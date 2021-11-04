@@ -33,7 +33,7 @@ class CommentServiceImpl @Autowired constructor(
         postCommentDtoAndUserToComment(postCommentDto, user, comment)
 
         album.comments.add(comment)
-
+        comment.album = album
         commentRepo.save(comment)
         albumRepo.save(album)
     }

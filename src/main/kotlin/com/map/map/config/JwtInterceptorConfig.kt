@@ -20,6 +20,8 @@ class JwtInterceptorConfig @Autowired constructor(
             .addPathPatterns("/comment/**")
             .addPathPatterns("/follow")
             .addPathPatterns("/follow/**")
+            .addPathPatterns("/like")
+            .addPathPatterns("/like/**")
     }
 
 }
