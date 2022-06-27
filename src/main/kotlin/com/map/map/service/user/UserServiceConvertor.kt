@@ -7,7 +7,7 @@ import kotlin.streams.toList
 fun userToUserInfoRo(user: User, userInfoRo: UserInfoRo, serverAddress: String) {
     userInfoRo.id = user.idx
     userInfoRo.name = user.name
-    userInfoRo.image = "${serverAddress}${user.image}"
+    userInfoRo.image = if (!user.image.equals(null)) "${serverAddress}${user.image}" else user.image
     userInfoRo.gender = user.gender
     userInfoRo.birthDay = user.birthDate
 }

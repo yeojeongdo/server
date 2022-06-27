@@ -32,7 +32,7 @@ class BuildingController @Autowired constructor(
     @GetMapping("albums")
     @ApiOperation("건물의 앨범 리스트 받아오기")
     fun getBuildingsAlbumList(@ModelAttribute @Valid getBuildingsAlbumListDto: GetBuildingsAlbumListDto, request: HttpServletRequest) : ResponseData<List<AlbumListRo>>{
-        val serverAddress = "${request.remoteAddr}:${port}"
+        val serverAddress = request.getAttribute("serverAddress") as String
         val albumList = buildingService.getAlbum(getBuildingsAlbumListDto, serverAddress)
         return ResponseData(HttpStatus.OK, "성공", albumList)
     }
@@ -41,7 +41,7 @@ class BuildingController @Autowired constructor(
     @GetMapping("users")
     @ApiOperation("건물의 유저 리스트 받아오기")
     fun getBuildingsUserList(@ModelAttribute @Valid getBuildingUserListDto: GetBuildingUserListDto, request: HttpServletRequest) : ResponseData<List<UserInfoRo>>{
-        val serverAddress = "${request.remoteAddr}:${port}"
+        val serverAddress = request.getAttribute("serverAddress") as String
         val userList = buildingService.getUser(getBuildingUserListDto, serverAddress)
         return ResponseData(HttpStatus.OK, "성공", userList)
     }
