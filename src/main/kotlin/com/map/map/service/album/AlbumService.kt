@@ -13,9 +13,9 @@ import org.springframework.web.multipart.MultipartFile
 interface AlbumService {
     fun makeAlbum(postAlbumDto: PostAlbumDto, userId: String)
     @Transactional(readOnly = true)
-    fun getAlbumListLatest(id: Long?): List<AlbumListRo>
-    fun getUsersAlbumListLatest(user : User, id:Long?): List<AlbumListRo>
-    fun getAlbumDetail(id:Long): AlbumDetailRo
+    fun getAlbumListLatest(id: Long?, serverAddress: String): List<AlbumListRo>
+    fun getUsersAlbumListLatest(user : User, id:Long?, serverAddress: String): List<AlbumListRo>
+    fun getAlbumDetail(id:Long, serverAddress: String): AlbumDetailRo
     fun findAlbum(id:Long):Album
-    fun getUserAlbumList(userIdx: Long, lastAlbumId: Long?): List<AlbumListRo>
+    fun getUserAlbumList(userIdx: Long, lastAlbumId: Long?, serverAddress: String): List<AlbumListRo>
 }

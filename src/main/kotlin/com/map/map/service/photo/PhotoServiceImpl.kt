@@ -19,7 +19,7 @@ class PhotoServiceImpl @Autowired constructor(
         for(file: MultipartFile in files){
             val fileName = fileService.storeFile(file)
             val photo = Photo()
-            photo.filed = serverAddress + "/file/" + fileName
+            photo.filed = "/file/$fileName"
 
             photoList.add(photo)
         }

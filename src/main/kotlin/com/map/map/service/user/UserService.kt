@@ -14,11 +14,11 @@ interface UserService {
     fun changeUserBirthDate(patchUserBirthDateDto: PatchUserBirthDateDto, userId: String)
     fun deleteUser(deleteUserDto: DeleteUserDto, userId: String)
     @Transactional(readOnly = true)
-    fun getUserInfo(userIdx:Long?, userId: String): UserInfoRo
+    fun getUserInfo(userIdx:Long?, userId: String, serverAddress: String): UserInfoRo
     fun changeUserImage(file: MultipartFile, userId: String)
     fun getUser(userId : String) : User
     fun getUser(userIdx : Long) : User
-    fun getFollowers(userIdx: Long, lastId:Long?) : List<UserInfoRo>
-    fun getFollowing(userIdx: Long, lastId:Long?) : List<UserInfoRo>
-    fun getAllFollowers(userIdx: Long): List<UserInfoRo>
+    fun getFollowers(userIdx: Long, lastId:Long?, serverAddress: String) : List<UserInfoRo>
+    fun getFollowing(userIdx: Long, lastId:Long?, serverAddress: String) : List<UserInfoRo>
+    fun getAllFollowers(userIdx: Long, serverAddress: String): List<UserInfoRo>
 }
