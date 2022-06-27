@@ -42,7 +42,7 @@ class AlbumController @Autowired constructor(
     @ApiOperation("앨범 최신순 보기")
     @ApiModelProperty(required = false, value = "id")
     fun getAlbumListLatest(@RequestParam  id : Long?, request: HttpServletRequest): ResponseData<List<AlbumListRo>> {
-        val serverAddress = "${request.remoteAddr}:${port}"
+        val serverAddress = "${request.localAddr}:${port}"
         val data = albumService.getAlbumListLatest(id, serverAddress)
         return ResponseData(HttpStatus.OK, "성공", data)
     }
@@ -50,7 +50,7 @@ class AlbumController @Autowired constructor(
     @GetMapping("/detail/{albumId}")
     @ApiOperation("앨범 자세히 보기")
     fun getAlbumDetail(@PathVariable albumId:Long, request: HttpServletRequest): ResponseData<AlbumDetailRo>{
-        val serverAddress = "${request.remoteAddr}:${port}"
+        val serverAddress = "${request.localAddr}:${port}"
         val data = albumService.getAlbumDetail(albumId, serverAddress)
         return ResponseData(HttpStatus.OK, "성공", data)
     }
@@ -59,7 +59,7 @@ class AlbumController @Autowired constructor(
      @GetMapping("/users/{userIdx}")
      @ApiOperation("유저의 앨범 리스트 받아오기")
      fun getUserPage(@PathVariable userIdx: Long, @RequestParam lastAlbumId:Long?, request: HttpServletRequest) : ResponseData<List<AlbumListRo>> {
-         val serverAddress = "${request.remoteAddr}:${port}"
+         val serverAddress = "${request.localAddr}:${port}"
          val albumList = albumService.getUserAlbumList(userIdx, lastAlbumId, serverAddress)
          return ResponseData(HttpStatus.OK, "성공", albumList)
      }
