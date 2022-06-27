@@ -60,7 +60,6 @@ class UserController @Autowired constructor(
     fun getUserInfo(@RequestParam idx:Long?, request: HttpServletRequest): ResponseData<UserInfoRo> {
         val userId = request.getAttribute("userId") as String
         val serverAddress = request.getAttribute("serverAddress") as String
-        println(serverAddress)
         val data = userService.getUserInfo(idx, userId, serverAddress)
         return ResponseData(HttpStatus.OK, "성공", data)
     }
