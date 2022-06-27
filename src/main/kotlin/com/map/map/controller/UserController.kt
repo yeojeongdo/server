@@ -59,7 +59,7 @@ class UserController @Autowired constructor(
     @ApiOperation("유저 정보 확인")
     fun getUserInfo(@RequestParam idx:Long?, request: HttpServletRequest): ResponseData<UserInfoRo> {
         val userId = request.getAttribute("userId") as String
-        val serverAddress = "${request.localAddr}:${port}"
+        val serverAddress = request.getAttribute("serverAddress") as String
         println(serverAddress)
         val data = userService.getUserInfo(idx, userId, serverAddress)
         return ResponseData(HttpStatus.OK, "성공", data)
@@ -78,7 +78,7 @@ class UserController @Autowired constructor(
     @GetMapping("/followers/{userIdx}")
     @ApiOperation("팔로워 받아오기")
     fun getFollowerList(@PathVariable @Valid @NotNull userIdx: Long, @RequestParam lastId: Long?, request: HttpServletRequest): ResponseData<List<UserInfoRo>>{
-        val serverAddress = "${request.localAddr}:${port}"
+        val serverAddress = request.getAttribute("serverAddress") as String
         val userList = userService.getFollowers(userIdx, lastId, serverAddress)
         return ResponseData(HttpStatus.OK,"성공", userList)
     }
@@ -87,7 +87,7 @@ class UserController @Autowired constructor(
     @GetMapping("/all/followers/{userIdx}")
     @ApiOperation("모든 팔로워 받아오기")
     fun getAllFollowerList(@PathVariable @Valid @NotNull userIdx: Long, request: HttpServletRequest): ResponseData<List<UserInfoRo>> {
-        val serverAddress = "${request.localAddr}:${port}"
+        val serverAddress = request.getAttribute("serverAddress") as String
         val userList = userService.getAllFollowers(userIdx, serverAddress)
         return ResponseData(HttpStatus.OK, "성공", userList)
     }
@@ -96,7 +96,7 @@ class UserController @Autowired constructor(
     @GetMapping("/followings/{userIdx}")
     @ApiOperation("팔로 받아오기")
     fun getFollowingList(@PathVariable @Valid @NotNull userIdx: Long, @RequestParam lastId: Long?, request: HttpServletRequest): ResponseData<List<UserInfoRo>>{
-        val serverAddress = "${request.localAddr}:${port}"
+        val serverAddress = request.getAttribute("serverAddress") as String
         val userList = userService.getFollowing(userIdx, lastId, serverAddress)
         return ResponseData(HttpStatus.OK,"성공", userList)
     }

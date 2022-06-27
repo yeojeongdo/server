@@ -36,7 +36,7 @@ class CommentController @Autowired constructor(
     @GetMapping("/list/{albumId}")
     @ApiOperation("댓글리스트 받아오기")
     fun getCommentList(@PathVariable albumId:Long, @RequestParam lastCommentId:Long?, request: HttpServletRequest): ResponseData<List<CommentRo>>{
-        val serverAddress = "${request.localAddr}:${port}"
+        val serverAddress = request.getAttribute("serverAddress") as String
         val data = commentService.getCommentList(albumId, lastCommentId, serverAddress)
         return ResponseData(HttpStatus.OK, "성공", data)
     }
@@ -45,7 +45,7 @@ class CommentController @Autowired constructor(
     @GetMapping("/all/list/{albumId}")
     @ApiOperation("모든 댓글 리스트 받아오기")
     fun getAllCommentList(@PathVariable albumId: Long, request: HttpServletRequest): ResponseData<List<CommentRo>> {
-        val serverAddress = "${request.localAddr}:${port}"
+        val serverAddress = request.getAttribute("serverAddress") as String
         val data = commentService.getCommentAllList(albumId, serverAddress)
         return ResponseData(HttpStatus.OK, "성공", data)
     }
