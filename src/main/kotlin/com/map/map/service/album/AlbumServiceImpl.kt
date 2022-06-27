@@ -65,7 +65,7 @@ class AlbumServiceImpl @Autowired constructor(
      * 엘범 최신순 보기
      */
     @Transactional(readOnly = true)
-    override fun getAlbumListLatest(id: Long?): List<AlbumListRo> {
+    override fun getAlbumListLatest(id: Long?, serverAddress: String): List<AlbumListRo> {
         var albumList : MutableList<Album>? = null
         if(id == null){
             albumList = albumRepo.findTop10ByOrderByIdxDesc()
@@ -73,16 +73,16 @@ class AlbumServiceImpl @Autowired constructor(
            albumList = albumRepo.findTop10ByIdxLessThanOrderByIdxDesc(id)
         }
 
-        return albumListRoToList(albumList)
+        return albumListRoToList(albumList, serverAddress)
     }
 
     @Transactional(readOnly = true)
-    override fun getUserAlbumList(userIdx: Long, lastAlbumId: Long?): List<AlbumListRo> {
+    override fun getUserAlbumList(userIdx: Long, lastAlbumId: Long?, serverAddress: String): List<AlbumListRo> {
         val user = userService.getUser(userIdx)
-        return getUsersAlbumListLatest(user, lastAlbumId)
+        return getUsersAlbumListLatest(user, lastAlbumId, serverAddress)
     }
 
-    override fun getUsersAlbumListLatest(user: User, id: Long?): List<AlbumListRo> {
+    override fun getUsersAlbumListLatest(user: User, id: Long?, serverAddress: String): List<AlbumListRo> {
         var albumList : MutableList<Album>? = null
         if(id == null){
             albumList = albumRepo.findTop10ByUserOrderByIdxDesc(user)
@@ -90,20 +90,20 @@ class AlbumServiceImpl @Autowired constructor(
             albumList = albumRepo.findTop10ByUserAndIdxLessThanOrderByIdxDesc(user, id)
         }
 
-        return albumListRoToList(albumList)
+        return albumListRoToList(albumList, serverAddress)
     }
 
     /**
      * 엘범 상세 정보
      */
-    override fun getAlbumDetail(id: Long): AlbumDetailRo {
+    override fun getAlbumDetail(id: Long, serverAddress: String): AlbumDetailRo {
         var album : Album = findAlbum(id)
 
         var commentNum : Long = commentQuery.getCommentNum(id)
         var likeNum: Long = likeQuery.getLikeNum(id)
 
         var albumDetailRo = AlbumDetailRo()
-        albumToAlbumDetail(album, commentNum, likeNum, albumDetailRo)
+        albumToAlbumDetail(album, commentNum, likeNum, albumDetailRo, serverAddress)
         return albumDetailRo
     }
 

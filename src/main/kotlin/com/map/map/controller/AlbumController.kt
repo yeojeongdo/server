@@ -10,6 +10,7 @@ import com.map.map.service.album.AlbumService
 import io.swagger.annotations.ApiModelProperty
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
@@ -21,6 +22,10 @@ import javax.validation.Valid
 class AlbumController @Autowired constructor(
      private var albumService: AlbumService
 ) {
+
+     @Value("\${server.port}")
+     private val port: Int? = null
+
     @AutoLogging
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @ApiOperation("앨범 생성")
@@ -36,16 +41,17 @@ class AlbumController @Autowired constructor(
     @GetMapping("/latest")
     @ApiOperation("앨범 최신순 보기")
     @ApiModelProperty(required = false, value = "id")
-    fun getAlbumListLatest(@RequestParam  id : Long?): ResponseData<List<AlbumListRo>> {
-        val data = albumService.getAlbumListLatest(id)
+    fun getAlbumListLatest(@RequestParam  id : Long?, request: HttpServletRequest): ResponseData<List<AlbumListRo>> {
+        val serverAddress = "${request.remoteAddr}:${port}"
+        val data = albumService.getAlbumListLatest(id, serverAddress)
         return ResponseData(HttpStatus.OK, "성공", data)
     }
     @AutoLogging
     @GetMapping("/detail/{albumId}")
     @ApiOperation("앨범 자세히 보기")
     fun getAlbumDetail(@PathVariable albumId:Long, request: HttpServletRequest): ResponseData<AlbumDetailRo>{
-        val userId = request.getAttribute("userId") as String
-        val data = albumService.getAlbumDetail(albumId)
+        val serverAddress = "${request.remoteAddr}:${port}"
+        val data = albumService.getAlbumDetail(albumId, serverAddress)
         return ResponseData(HttpStatus.OK, "성공", data)
     }
 
@@ -53,7 +59,8 @@ class AlbumController @Autowired constructor(
      @GetMapping("/users/{userIdx}")
      @ApiOperation("유저의 앨범 리스트 받아오기")
      fun getUserPage(@PathVariable userIdx: Long, @RequestParam lastAlbumId:Long?, request: HttpServletRequest) : ResponseData<List<AlbumListRo>> {
-         val albumList = albumService.getUserAlbumList(userIdx, lastAlbumId)
+         val serverAddress = "${request.remoteAddr}:${port}"
+         val albumList = albumService.getUserAlbumList(userIdx, lastAlbumId, serverAddress)
          return ResponseData(HttpStatus.OK, "성공", albumList)
      }
 }

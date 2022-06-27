@@ -13,7 +13,7 @@ services:
     platform: linux/x86_64
 
   application:
-    container_name: idaServer
+    container_name: Yeojeongdo_Server
     build: .
     volumes:
       - type: bind

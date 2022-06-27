@@ -90,7 +90,7 @@ class UserServiceImpl @Autowired constructor(
      * 유저 정보 받아오기
      */
     @Transactional(readOnly = true)
-    override fun getUserInfo(userIdx: Long?, userId: String): UserInfoRo {
+    override fun getUserInfo(userIdx: Long?, userId: String, serverAddress: String): UserInfoRo {
 
         val user = if (userIdx == null) {
             getUser(userId)
@@ -99,7 +99,7 @@ class UserServiceImpl @Autowired constructor(
         }
 
         val response = UserInfoRo()
-        userToUserInfoRo(user, response)
+        userToUserInfoRo(user, response, serverAddress)
 
         return response
     }
@@ -123,22 +123,22 @@ class UserServiceImpl @Autowired constructor(
         return userRepo.findByIdx(userIdx) ?: throw CustomHttpException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.")
     }
 
-    override fun getFollowers(userIdx: Long, lastId: Long?): List<UserInfoRo> {
+    override fun getFollowers(userIdx: Long, lastId: Long?, serverAddress: String): List<UserInfoRo> {
         val users = userQuery.getUserFollower(userIdx, lastId)
 
-        return changeUserListToUserInfoList(users);
+        return changeUserListToUserInfoList(users, serverAddress)
     }
 
-    override fun getFollowing(userIdx: Long, lastId: Long?): List<UserInfoRo> {
+    override fun getFollowing(userIdx: Long, lastId: Long?, serverAddress: String): List<UserInfoRo> {
         val users = userQuery.getUserFollowing(userIdx, lastId)
 
-        return changeUserListToUserInfoList(users);
+        return changeUserListToUserInfoList(users, serverAddress)
     }
 
-    override fun getAllFollowers(userIdx: Long): List<UserInfoRo> {
+    override fun getAllFollowers(userIdx: Long, serverAddress: String): List<UserInfoRo> {
         val users = userQuery.getUserAllFollower(userIdx)
 
-        return changeUserListToUserInfoList(users);
+        return changeUserListToUserInfoList(users, serverAddress)
     }
 
     /**

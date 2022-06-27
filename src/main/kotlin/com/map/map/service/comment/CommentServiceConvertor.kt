@@ -13,10 +13,10 @@ fun postCommentDtoAndUserToComment(postCommentDto: PostCommentDto, user: User, c
 
 }
 
-fun commentToCommentRo(comment: Comment, commentRo: CommentRo){
+fun commentToCommentRo(comment: Comment, commentRo: CommentRo, serverAddress: String){
     commentRo.id = comment.idx
     commentRo.content = comment.content
 
     commentRo.user = UserInfoRo()
-    userToUserInfoRo(comment.user!!, commentRo.user!!)
+    userToUserInfoRo(comment.user!!, commentRo.user!!, serverAddress)
 }

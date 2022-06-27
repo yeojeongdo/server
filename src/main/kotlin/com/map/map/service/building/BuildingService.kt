@@ -12,7 +12,7 @@ import com.map.map.domain.response.user.UserInfoRo
 
 interface BuildingService {
     fun setBuilding(postAlbumDto: PostAlbumDto): Building
-    fun getAlbum(getBuildingsAlbumListDto: GetBuildingsAlbumListDto) : List<AlbumListRo>
-    fun getUser(getBuildingUserListDto: GetBuildingUserListDto) : List<UserInfoRo>
+    fun getAlbum(getBuildingsAlbumListDto: GetBuildingsAlbumListDto, serverAddress: String) : List<AlbumListRo>
+    fun getUser(getBuildingUserListDto: GetBuildingUserListDto, serverAddress: String) : List<UserInfoRo>
     fun searchBuilding(searchBuildingDto: SearchBuildingDto) : List<BuildingInfoRo>
 }

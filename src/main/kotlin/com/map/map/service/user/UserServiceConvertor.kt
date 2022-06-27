@@ -4,18 +4,18 @@ import com.map.map.domain.entity.User
 import com.map.map.domain.response.user.UserInfoRo
 import kotlin.streams.toList
 
-fun userToUserInfoRo(user: User, userInfoRo: UserInfoRo) {
+fun userToUserInfoRo(user: User, userInfoRo: UserInfoRo, serverAddress: String) {
     userInfoRo.id = user.idx
     userInfoRo.name = user.name
-    userInfoRo.image = user.image
+    userInfoRo.image = "${serverAddress}${user.image}"
     userInfoRo.gender = user.gender
     userInfoRo.birthDay = user.birthDate
 }
 
-fun changeUserListToUserInfoList(users:List<User>):List<UserInfoRo>{
+fun changeUserListToUserInfoList(users: List<User>, serverAddress: String): List<UserInfoRo> {
     return users.stream().map {
         val userInfo = UserInfoRo()
-        userToUserInfoRo(it, userInfo)
+        userToUserInfoRo(it, userInfo, serverAddress)
         userInfo
     }.toList()
 }

@@ -30,21 +30,21 @@ fun setAlbum(album : Album, postAlbumDto: PostAlbumDto, user: User, building: Bu
     album.building = building
 }
 
-fun albumToAlbumListRo(albumListRo: AlbumListRo, album: Album) {
+fun albumToAlbumListRo(albumListRo: AlbumListRo, album: Album, serverAddress: String) {
     albumListRo.id = album.idx
     albumListRo.createDate = album.date
 
-    albumListRo.photo = album.photo[0].filed
+    albumListRo.photo = serverAddress + album.photo[0].filed
 
     albumListRo.user = UserInfoRo()
-    userToUserInfoRo(album.user!!, albumListRo.user!!)
+    userToUserInfoRo(album.user!!, albumListRo.user!!, serverAddress)
 
 
     albumListRo.building = BuildingInfoRo()
     buildingToBuildingInfo(album.building!!, albumListRo.building!!)
 }
 
-fun albumToAlbumDetail(album: Album, commentNum: Long, likeNum: Long, albumDetailRo: AlbumDetailRo){
+fun albumToAlbumDetail(album: Album, commentNum: Long, likeNum: Long, albumDetailRo: AlbumDetailRo, serverAddress: String){
     albumDetailRo.id = album.idx
     albumDetailRo.createDate = album.date
     albumDetailRo.memo = album.memo
@@ -52,11 +52,11 @@ fun albumToAlbumDetail(album: Album, commentNum: Long, likeNum: Long, albumDetai
     albumDetailRo.likeNum = likeNum
 
     album.photo.stream().forEach{
-        albumDetailRo.photo.add(it.filed!!)
+        albumDetailRo.photo.add(serverAddress + it.filed!!)
     }
 
     albumDetailRo.user = UserInfoRo()
-    userToUserInfoRo(album.user!!, albumDetailRo.user!!)
+    userToUserInfoRo(album.user!!, albumDetailRo.user!!, serverAddress)
 
     albumDetailRo.building = BuildingInfoRo()
     buildingToBuildingInfo(album.building!!, albumDetailRo.building!!)
@@ -65,10 +65,10 @@ fun albumToAlbumDetail(album: Album, commentNum: Long, likeNum: Long, albumDetai
 /**
  * AlbumListRo 를 리스트로 만들어주기
  */
-fun albumListRoToList(albums: MutableList<Album>): List<AlbumListRo> {
+fun albumListRoToList(albums: MutableList<Album>, serverAddress: String): List<AlbumListRo> {
     return albums.stream().map {
         var albumListRo = AlbumListRo()
-        albumToAlbumListRo(albumListRo, it)
+        albumToAlbumListRo(albumListRo, it, serverAddress)
         albumListRo
     }.toList()
 }

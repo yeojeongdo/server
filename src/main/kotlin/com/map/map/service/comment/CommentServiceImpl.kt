@@ -40,24 +40,24 @@ class CommentServiceImpl @Autowired constructor(
     }
 
     @Transactional(readOnly = true)
-    override fun getCommentList(albumId: Long, lastCommentId: Long?) : List<CommentRo>{
+    override fun getCommentList(albumId: Long, lastCommentId: Long?, serverAddress: String) : List<CommentRo>{
         albumService.findAlbum(albumId)
         val comments = commentQuery.getCommentList(albumId, lastCommentId)
 
         return comments.stream().map {
             val commentRo = CommentRo()
-            commentToCommentRo(it, commentRo)
+            commentToCommentRo(it, commentRo, serverAddress)
             commentRo
         }.toList()
     }
 
     @Transactional(readOnly = true)
-    override fun getCommentAllList(albumId: Long): List<CommentRo> {
+    override fun getCommentAllList(albumId: Long, serverAddress: String): List<CommentRo> {
         val comments = commentRepo.findAllByAlbumIdx(albumId)
 
         return comments.stream().map {
             val commentRo = CommentRo()
-            commentToCommentRo(it, commentRo)
+            commentToCommentRo(it, commentRo, serverAddress)
             commentRo
         }.toList()
     }

@@ -40,14 +40,14 @@ class BuildingServiceImpl @Autowired constructor(
         return building
     }
 
-    override fun getAlbum(getBuildingsAlbumListDto: GetBuildingsAlbumListDto): List<AlbumListRo> {
+    override fun getAlbum(getBuildingsAlbumListDto: GetBuildingsAlbumListDto, serverAddress: String): List<AlbumListRo> {
         checkBuildingExist(getBuildingsAlbumListDto.address!!)
 
         val albums = buildingQuery.getAlbums(getBuildingsAlbumListDto.address!!, getBuildingsAlbumListDto.lastAlbumId)
 
         return albums.stream().map {
             val albumListRo = AlbumListRo()
-            albumToAlbumListRo(albumListRo, it)
+            albumToAlbumListRo(albumListRo, it, serverAddress)
             albumListRo
         }.toList()
 //        for(album:Album in albums){
@@ -59,14 +59,14 @@ class BuildingServiceImpl @Autowired constructor(
 //        return albumList
     }
 
-    override fun getUser(getBuildingUserListDto: GetBuildingUserListDto): List<UserInfoRo> {
+    override fun getUser(getBuildingUserListDto: GetBuildingUserListDto, serverAddress: String): List<UserInfoRo> {
         checkBuildingExist(getBuildingUserListDto.address!!)
 
         val users = buildingQuery.getUsers(getBuildingUserListDto.address!!, getBuildingUserListDto.lastUserId)
 
         return users.stream().map {
             val userInfoRo = UserInfoRo();
-            userToUserInfoRo(it, userInfoRo)
+            userToUserInfoRo(it, userInfoRo, serverAddress)
             userInfoRo
         }.toList()
     }
